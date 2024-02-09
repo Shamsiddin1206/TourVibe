@@ -4,7 +4,7 @@ import android.content.Context
 import com.google.gson.Gson
 
 class SharedPreferences private constructor(context: Context){
-    private val shared = context.getSharedPreferences("data", 0)
+    private val shared = context.getSharedPreferences("data", Context.MODE_PRIVATE)
     private val edit = shared.edit()
     val gson = Gson()
 
@@ -16,5 +16,12 @@ class SharedPreferences private constructor(context: Context){
             }
             return instance!!
         }
+    }
+
+    fun setCountry(country: String){
+        edit.putString("Country", country).apply()
+    }
+    fun getCountry(): String{
+        return shared.getString("Country", "")!!
     }
 }

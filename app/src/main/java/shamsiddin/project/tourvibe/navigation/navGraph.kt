@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import shamsiddin.project.tourvibe.screen.Countries
 import shamsiddin.project.tourvibe.screen.GuideBook
 import shamsiddin.project.tourvibe.screen.Hotels
 import shamsiddin.project.tourvibe.screen.Login
@@ -14,7 +15,7 @@ import shamsiddin.project.tourvibe.screen.Splash
 
 @Composable
 fun SetNavGraph(navController: NavHostController){
-    NavHost(navController = navController, startDestination = ScreenType.Splash.route){
+    NavHost(navController = navController, startDestination = ScreenType.GuideBook.route){
         composable(ScreenType.Splash.route){
             Splash(navController)
         }
@@ -35,6 +36,9 @@ fun SetNavGraph(navController: NavHostController){
         }
         composable(ScreenType.Profile.route){
             Profile(navController)
+        }
+        composable(ScreenType.Countries.route){
+            Countries(navController)
         }
     }
 }

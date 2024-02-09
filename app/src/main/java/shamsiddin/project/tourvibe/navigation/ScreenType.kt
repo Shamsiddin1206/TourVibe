@@ -8,4 +8,5 @@ sealed class ScreenType(val route: String){
     object Menu: ScreenType("menu_screen")
     object GuideBook: ScreenType("guideBook_screen")
     object Profile: ScreenType("profile_screen")
+    object Countries: ScreenType("countries_screen")
 }
