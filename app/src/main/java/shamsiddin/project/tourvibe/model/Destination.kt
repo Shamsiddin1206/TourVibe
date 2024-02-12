@@ -7,7 +7,7 @@ data class Destination(
     var name: String,
     var description: String,
     var rating: Double,
-    var comments: List<Comment>,
+    var comments: List<Comment>?,
     var category: String,
     var locatedCountry: String,
     var locatedState: String
