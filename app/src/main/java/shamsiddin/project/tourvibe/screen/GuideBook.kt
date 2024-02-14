@@ -1,5 +1,6 @@
 package shamsiddin.project.tourvibe.screen
 
+import android.graphics.BlurMaskFilter.Blur
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -26,6 +27,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -33,9 +35,15 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.BlurredEdgeTreatment
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.BlurEffect
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -43,14 +51,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import coil.compose.SubcomposeAsyncImage
 import shamsiddin.project.tourvibe.R
 import shamsiddin.project.tourvibe.model.CategoryData
-import shamsiddin.project.tourvibe.model.Comment
 import shamsiddin.project.tourvibe.model.Destination
-import shamsiddin.project.tourvibe.ui.theme.GreenPrimary
-import shamsiddin.project.tourvibe.ui.theme.PurpleGrey40
 
 @Composable
 fun GuideBook(navController: NavController) {
@@ -132,7 +136,7 @@ fun GuideBook(navController: NavController) {
             }
         }
         val destination = Destination(0, "https://cdn.odysseytraveller.com/app/uploads/2019/07/registan-square-samarkand.jpg", listOf("", "", ""), "", "", (4.8), category = "", locatedCountry = "Uzbekistan", locatedState = "Samarkand", comments = null)
-        PlaceItem(destination = destination)
+        GlassMorphismCardWithImage(imageResId = R.drawable.img_1)
 
     }
 }
@@ -169,7 +173,6 @@ fun CategoryItem(categoryData: CategoryData) {
                     .padding(start = (2.5).dp),
                 contentScale = ContentScale.FillBounds
             )
-//            AsyncImage(model = categoryData.image, contentDescription = "")
             Text(
                 text = categoryData.type,
                 color = Color.Black,
@@ -204,18 +207,87 @@ fun PlaceItem(destination: Destination){
         Box(modifier = Modifier.fillMaxSize()) {
             SubcomposeAsyncImage(model = destination.mainImage,
                 contentDescription = "",
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .blur(50.dp),
                 contentScale = ContentScale.FillBounds,
                 loading = { CircularProgressIndicator()})
             Card(modifier = Modifier
-                .blur(7.dp)
                 .fillMaxWidth()
-                .padding(start = 10.dp, end = 10.dp, bottom = 15.dp)
-                .align(Alignment.BottomCenter)) {
-                Column {
-                    Text(text = "The Registan", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 17.sp)
+                .padding(start = 10.dp, end = 10.dp, bottom = 10.dp)
+                .align(Alignment.BottomCenter)
+                .background(Color.White.copy(0.2f)),
+                elevation = CardDefaults.cardElevation(5.dp)) {
+                Box(modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.White.copy(0.5f))
+                    .blur(4.dp)) {
+                    Column {
+                        Text(text = "The Registan", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 17.sp)
+                    }
                 }
+//                Box(modifier = Modifier
+//                    .fillMaxSize()
+//                    .alpha(1f)
+//                    .blur(
+//                        radius = 15.dp,
+//                        edgeTreatment = BlurredEdgeTreatment.Unbounded)
+//                    .background(
+//                        Brush.radialGradient(
+//                            listOf(
+//                                Color(0x12FFFFFF),
+//                                Color(0xDFFFFFF),
+//                                Color(0x9FFFFFFF)
+//
+//                            ),
+//                            radius = 2200f,
+//                            center = Offset.Infinite
+//                        )
+//                    )) {
+//
+//                }
+
             }
         }
     }
 }
+
+@Composable
+fun GlassMorphismCardWithImage(imageResId: Int) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
+        // Image
+        Image(
+            painter = painterResource(id = imageResId),
+            contentDescription = null, // You should provide a proper content description
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop
+        )
+
+        // Glass morphism card overlay
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp), // Padding to keep the content away from edges
+            contentAlignment = Alignment.Center
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(
+                        color = MaterialTheme.colorScheme.surface
+                            .copy(alpha = 0.2f), // Adjust the alpha for the desired transparency
+                        shape = RoundedCornerShape(16.dp)
+                    )
+                    .align(Alignment.Center),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(text = "The Registan", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 17.sp)
+                // Add your card content here, e.g., text, buttons, etc.
+            }
+        }
+    }
+}
+
