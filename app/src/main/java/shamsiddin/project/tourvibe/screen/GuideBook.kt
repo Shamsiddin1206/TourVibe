@@ -88,7 +88,13 @@ fun GuideBook(navController: NavController) {
         )
     )
     val destinationList = mutableListOf<Destination>(
-        Destination(0, "https://cdn.odysseytraveller.com/app/uploads/2019/07/registan-square-samarkand.jpg", listOf("https://www.whyweseek.com/wp-content/uploads/2019/06/registan-at-night-samarkand.jpg", "https://uzbek-travel.com/images/uz/Landmarks/Samarkand/The_Registan/4241211370_dd3f3136ff_b.jpg", "https://lifejourney4two.com/wp-content/uploads/2020/01/registan-square-samarkand_.jpg"), "The Registan", "", 4.8, null, "", "", ""),
+        Destination(0, "https://cdn.odysseytraveller.com/app/uploads/2019/07/registan-square-samarkand.jpg", listOf("https://www.whyweseek.com/wp-content/uploads/2019/06/registan-at-night-samarkand.jpg", "https://uzbek-travel.com/images/uz/Landmarks/Samarkand/The_Registan/4241211370_dd3f3136ff_b.jpg", "https://lifejourney4two.com/wp-content/uploads/2020/01/registan-square-samarkand_.jpg"), "The Registan", "Translated from Uzbek, “registan” means a sand place. In the ancient times, this central square was covered by sand. The territory was not initially surrounded by madrassah; those great erections appeared rather later. In that period, authorities of the city were gathering people on the square to announce khan’s orders, held celebrations and public executions, and collected the army leaving to war.\n" +
+                "\n" +
+                "In the past, one could see many trade rows around the square, where artisans and farmers were selling their goods. All main roads of Samarkand led to Registan where it was always noisy and lively.\n" +
+                "\n" +
+                "Various rulers during their reign would change the main significance of the square, but since those times and up to now, Registan has always been the center of the city social life.\n" +
+                "\n" +
+                "There are three madrassahs on the square: Ulugh Beg, Sherdor and Tilla-Kori, that are the main sights of the city. They were erected by two rulers at different times.", 4.8, null, "", "Uzbekistan", "Samarkand"),
         Destination(0, "https://cdn.elebase.io/173fe953-8a63-4a8a-8ca3-1bacb56d78a5/85de9252-cff1-4907-beea-e984ed9ccf1a-shutterstock_2084584372.jpg?w=1000&h=500&fit=crop&q=75", listOf("", "", ""), "Itchan Kala", "", 4.8, null, "", "", ""),
         Destination(0, "https://uzbek-travel.com/images/uz/Landmarks/Tashkent/Amir_Temur_Square/amir_temur_square_4.jpg", listOf("", "", ""), "Amir Temur Square", "", 4.8, null, "", "", ""),
         Destination(0, "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/18/03/00/52/la-moschea-di-kok-gumbaz.jpg?w=500&h=400&s=1", listOf("", "", ""), "Shakhrisabz", "", 4.8, null, "", "", ""),
@@ -222,10 +228,7 @@ fun PlaceItem(destination: Destination, navController: NavController){
         .fillMaxWidth()
         .padding(5.dp)
         .aspectRatio(0.8f)
-        .clickable {
-            Log.d("Clicked Item", "PlaceItem: ${destination.name}")
-            navController.navigate("place_screen" + "/${destination}")
-                   },
+        .clickable { navController.navigate("place_screen" + "/${destination}") },
         elevation = CardDefaults.cardElevation(5.dp),
         shape = RoundedCornerShape(5.dp)
     ) {
@@ -267,42 +270,4 @@ fun PlaceItem(destination: Destination, navController: NavController){
     }
 }
 
-@Composable
-fun GlassMorphismCardWithImage(imageResId: Int) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-    ) {
-        // Image
-        Image(
-            painter = painterResource(id = imageResId),
-            contentDescription = null, // You should provide a proper content description
-            modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.Crop
-        )
-
-        // Glass morphism card overlay
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp), // Padding to keep the content away from edges
-            contentAlignment = Alignment.Center
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(
-                        color = MaterialTheme.colorScheme.surface
-                            .copy(alpha = 0.2f), // Adjust the alpha for the desired transparency
-                        shape = RoundedCornerShape(16.dp)
-                    )
-                    .align(Alignment.Center),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(text = "The Registan", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 17.sp)
-                // Add your card content here, e.g., text, buttons, etc.
-            }
-        }
-    }
-}
 
