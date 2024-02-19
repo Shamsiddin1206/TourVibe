@@ -183,7 +183,7 @@ private fun Title(name: String, scrollState: ScrollState) {
                 val collapseFraction: Float = (scrollState.value / collapseRange).coerceIn(0f, 1f)
 
                 val titleY = lerp(
-                    300.dp - titleHeightDp - 20.dp, // start Y
+                    280.dp - titleHeightDp - 20.dp, // start Y
                     56.dp / 2 - titleHeightDp / 2, // end Y
                     collapseFraction
                 )
