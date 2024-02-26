@@ -12,6 +12,7 @@ import com.google.gson.Gson
 import shamsiddin.project.tourvibe.model.Destination
 import shamsiddin.project.tourvibe.model.DestinationArgType
 import shamsiddin.project.tourvibe.screen.Countries
+import shamsiddin.project.tourvibe.screen.Default
 import shamsiddin.project.tourvibe.screen.GuideBook
 import shamsiddin.project.tourvibe.screen.Hotels
 import shamsiddin.project.tourvibe.screen.Login
@@ -23,7 +24,7 @@ import shamsiddin.project.tourvibe.screen.Splash
 
 @Composable
 fun SetNavGraph(navController: NavHostController){
-    NavHost(navController = navController, startDestination = ScreenType.GuideBook.route){
+    NavHost(navController = navController, startDestination = ScreenType.Default.route){
         composable(ScreenType.Splash.route){
             Splash(navController)
         }
@@ -54,6 +55,9 @@ fun SetNavGraph(navController: NavHostController){
             val destination = it.arguments?.getString("destination")?.let { it1 -> Gson().fromJson(it1, Destination::class.java) }
             Log.d("navGraph Destination", "SetNavGraph: ${destination!!.name}")
             Place(navController = navController, destination = destination)
+        }
+        composable(ScreenType.Default.route){
+            Default(navController)
         }
     }
 }

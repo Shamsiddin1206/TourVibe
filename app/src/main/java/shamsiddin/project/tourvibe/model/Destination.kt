@@ -12,9 +12,10 @@ data class Destination(
     var description: String,
     var rating: Double,
     var comments: List<Comment>?,
-    var category: String,
+    var category: List<String>,
     var locatedCountry: String,
-    var locatedState: String
+    var locatedState: String,
+    var overViewVideo: String
 ){
     override fun toString(): String = Uri.encode(Gson().toJson(this))
 

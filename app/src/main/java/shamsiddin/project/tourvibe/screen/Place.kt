@@ -1,7 +1,8 @@
 package shamsiddin.project.tourvibe.screen
 
 import android.annotation.SuppressLint
-import android.util.Log
+import android.content.Context
+import android.view.ViewGroup
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -10,30 +11,36 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
+import androidx.compose.material3.TabRowDefaults
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -42,34 +49,42 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.content.ContextCompat
+import androidx.media3.common.MediaItem
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.exoplayer.SimpleExoPlayer
 import androidx.navigation.NavController
 import coil.compose.SubcomposeAsyncImage
+import com.google.accompanist.pager.ExperimentalPagerApi
+import kotlinx.coroutines.launch
 import shamsiddin.project.tourvibe.R
+import shamsiddin.project.tourvibe.model.Comment
 import shamsiddin.project.tourvibe.model.Destination
+import shamsiddin.project.tourvibe.ui.theme.GreenPrimary
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun Place(navController: NavController, destination: Destination?){
-//    val pagerState = rememberPagerState(pageCount = {listOfImages.size})
-
     Scaffold {
         CollapsingToolbar(destination = destination!!)
     }
@@ -83,7 +98,7 @@ fun CollapsingToolbar(destination: Destination) {
 
     Box(modifier = Modifier.fillMaxSize()) {
         Header(mainImage, listOfImages, scroll)
-        Body(destination.description, scroll)
+        Body(destination, scroll)
         Toolbar(scroll)
         Title(destination.name, scroll)
     }
@@ -120,22 +135,169 @@ private fun Header(mainImage: String, listOfImages: List<String>, scrollState: S
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class, ExperimentalPagerApi::class)
 @Composable
-private fun Body(text: String, scrollState: ScrollState) {
+private fun Body(destination: Destination, scrollState: ScrollState) {
+    val tabData = listOf("Overview", "Details", "Reviews")
+    var bodyPagerState = rememberPagerState(pageCount = {tabData.size})
+    val coroutineScope = rememberCoroutineScope()
+    var selectedIndex = remember { mutableStateOf(0) }
+
     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.verticalScroll(scrollState)) {
         Spacer(Modifier.height(270.dp))
-        Card(modifier = Modifier.fillMaxSize(), shape = RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp), elevation = CardDefaults.cardElevation(5.dp)) {
-            repeat(5) {
-                Text(
-                    text = text,
-                    style = MaterialTheme.typography.bodyMedium,
-                    textAlign = TextAlign.Justify,
+        Card(modifier = Modifier.fillMaxSize(), colors = CardDefaults.cardColors(Color.White), shape = RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp), elevation = CardDefaults.cardElevation(5.dp)) {
+            Spacer(modifier = Modifier.height(15.dp))
+            Column {
+                Row(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 15.dp, end = 15.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                    Text(text = "${destination.locatedState}, ${destination.locatedCountry}", color = Color.Black, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Image(painter = painterResource(id = R.drawable.star), contentDescription = "", modifier = Modifier.size(25.dp))
+                        Spacer(modifier = Modifier.width(5.dp))
+                        Text(text = destination.rating.toString(), fontSize = 15.sp)
+                    }
+                }
+                Spacer(modifier = Modifier.height(10.dp))
+                TabRow(selectedTabIndex = selectedIndex.value,
                     modifier = Modifier
-                        .background(Color.White)
-                        .padding(16.dp)
-                )
+                        .fillMaxWidth()
+                        .wrapContentHeight(),
+                    indicator = {
+                        TabRowDefaults.Indicator(
+                            modifier = Modifier.tabIndicatorOffset(it[selectedIndex.value]),
+                            height = 3.dp,
+                            color = Color(android.graphics.Color.parseColor("#FF2F7A83"))
+                        )
+                    },
+                    containerColor = Color.White
+                ) {
+                    tabData.forEachIndexed { index, s ->
+                        Tab(selected = selectedIndex.value == index,
+                            onClick = {
+                                selectedIndex.value = index
+                                coroutineScope.launch { bodyPagerState.animateScrollToPage(index) } },
+                            text = {Text(text = s, color = Color.Black)}
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.height(10.dp))
+                when(selectedIndex.value){
+                    0 -> {
+                        OverView(destination = destination)
+                    }
+                    1 -> {
+                        Details(destination = destination)
+                    }
+                    2 -> {
+                        Reviews(destination = destination)
+                    }
+                }
             }
         }
+    }
+}
+
+@Composable
+fun OverView(destination: Destination){
+    val context = LocalContext.current
+    Column(modifier = Modifier.fillMaxWidth()) {
+//        SubcomposeAsyncImage(
+//            model = destination.mainImage,
+//            contentDescription = "",
+//            loading = { CircularProgressIndicator()},
+//            contentScale = ContentScale.FillBounds,
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .padding(start = 10.dp, end = 10.dp)
+//                .height(200.dp))
+//        Box(modifier = Modifier
+//            .height(200.dp)
+//            .fillMaxWidth()
+//            .padding(start = 10.dp, end = 10.dp)){
+//            VideoPlayer(videoUrl = destination.overViewVideo, context = LocalContext.current)
+//        }
+        Spacer(modifier = Modifier.height(10.dp))
+        repeat(2){
+            Text(text = destination.description,
+                style = MaterialTheme.typography.bodyMedium,
+                textAlign = TextAlign.Justify,
+                modifier = Modifier
+                    .background(Color.White)
+                    .padding(16.dp),
+                color = Color.Black
+            )
+        }
+    }
+}
+
+@Composable
+fun Details(destination: Destination){
+    repeat(5){
+        Text(text = destination.description,
+            style = MaterialTheme.typography.bodyMedium,
+            textAlign = TextAlign.Justify,
+            modifier = Modifier
+                .background(Color.White)
+                .padding(16.dp),
+            color = Color.Black
+        )
+    }
+}
+
+@Composable
+fun Reviews(destination: Destination){
+    val list = destination.comments
+    Box(modifier = Modifier
+        .fillMaxWidth()) {
+        if (!list.isNullOrEmpty()){
+            LazyColumn(modifier = Modifier
+                .fillMaxWidth()
+                .height(1000.dp)){
+                items(list.size){
+                    ReviewItem(comment = list[it])
+                }
+            }
+        }else{
+            Text(text = "No comments yet",
+                fontSize = 18.sp,
+                color = Color.Black,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.align(
+                    Alignment.Center))
+        }
+    }
+}
+
+@Composable
+fun ReviewItem(comment: Comment){
+    Column(modifier = Modifier
+        .fillMaxWidth()
+        .padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 5.dp)) {
+        Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+            Image(
+                painter = painterResource(id = R.drawable.person_default_ic),
+                contentDescription = "",
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(
+                        RoundedCornerShape(50)
+                    )
+            )
+            Spacer(modifier = Modifier.width(5.dp))
+            Column {
+                Text(text = comment.author.name, color = Color.Black, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                Row {
+                    Image(painter = painterResource(id = R.drawable.star), contentDescription = "", modifier = Modifier.size(25.dp))
+                    Spacer(modifier = Modifier.width(5.dp))
+                    Text(text = comment.rating.toString(), fontSize = 14.sp)
+                }
+            }
+        }
+        Spacer(modifier = Modifier.height(5.dp))
+        Text(text = comment.text, modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 10.dp, end = 10.dp), color = Color.Gray, fontSize = 14.sp)
     }
 }
 
@@ -157,9 +319,7 @@ private fun Toolbar(scrollState: ScrollState) {
     ) {
         TopAppBar(
             modifier = Modifier.background(
-                brush = Brush.horizontalGradient(
-                    listOf(Color(0xff026586), Color(0xff032C45))
-                )
+                color = Color(android.graphics.Color.parseColor("#FF2F7A83"))
             ),
             title = {},
             colors = TopAppBarDefaults.mediumTopAppBarColors(Color.Transparent)
@@ -184,7 +344,7 @@ private fun Title(name: String, scrollState: ScrollState) {
 
                 val titleY = lerp(
                     280.dp - titleHeightDp - 20.dp, // start Y
-                    56.dp / 2 - titleHeightDp / 2, // end Y
+                    58.dp / 2 - titleHeightDp / 2, // end Y
                     collapseFraction
                 )
 
@@ -198,8 +358,6 @@ private fun Title(name: String, scrollState: ScrollState) {
                 translationX = titleX.toPx()
             }
             .onGloballyPositioned {
-                // We don't know title height in advance to calculate the lerp
-                // so we wait for initial composition
                 titleHeightPx = it.size.height.toFloat()
             },
         color = Color.White
@@ -217,5 +375,16 @@ fun ViewPager(pagerState: PagerState, listOfImages: List<String>){
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.FillBounds)
     }
+}
+
+@androidx.annotation.OptIn(UnstableApi::class) @Composable
+fun VideoPlayer() {
+    val context = LocalContext.current
+    val exoPlayer = remember {
+        SimpleExoPlayer.Builder(context).build().apply {
+            this.prepare()
+        }
+    }
+
 }
 
