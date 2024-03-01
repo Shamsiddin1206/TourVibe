@@ -1,8 +1,7 @@
 package shamsiddin.project.tourvibe.screen
 
 import android.annotation.SuppressLint
-import android.content.Context
-import android.view.ViewGroup
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -11,11 +10,13 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -24,18 +25,39 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ModalBottomSheetValue
+import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Cancel
+import androidx.compose.material.icons.filled.Done
+import androidx.compose.material.icons.filled.DoneOutline
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.StarOutline
+import androidx.compose.material.icons.outlined.Cancel
+import androidx.compose.material.icons.outlined.DoneOutline
+import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material.icons.outlined.Star
+import androidx.compose.material.rememberModalBottomSheetState
+import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
@@ -45,6 +67,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -62,14 +86,12 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.viewinterop.AndroidView
-import androidx.core.content.ContextCompat
-import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.SimpleExoPlayer
 import androidx.navigation.NavController
@@ -79,7 +101,8 @@ import kotlinx.coroutines.launch
 import shamsiddin.project.tourvibe.R
 import shamsiddin.project.tourvibe.model.Comment
 import shamsiddin.project.tourvibe.model.Destination
-import shamsiddin.project.tourvibe.ui.theme.GreenPrimary
+import shamsiddin.project.tourvibe.utils.SharedPreferences
+
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
@@ -116,7 +139,7 @@ private fun Header(mainImage: String, listOfImages: List<String>, scrollState: S
         }) {
         SubcomposeAsyncImage(
             model = mainImage,
-            contentDescription = null,
+            contentDescription = "",
             loading = { CircularProgressIndicator()},
             contentScale = ContentScale.FillBounds,
             modifier = Modifier.fillMaxSize()
@@ -135,65 +158,176 @@ private fun Header(mainImage: String, listOfImages: List<String>, scrollState: S
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalPagerApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalPagerApi::class,
+    ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class
+)
 @Composable
 private fun Body(destination: Destination, scrollState: ScrollState) {
     val tabData = listOf("Overview", "Details", "Reviews")
-    var bodyPagerState = rememberPagerState(pageCount = {tabData.size})
+    val bodyPagerState = rememberPagerState(pageCount = {tabData.size})
     val coroutineScope = rememberCoroutineScope()
-    var selectedIndex = remember { mutableStateOf(0) }
+    val selectedIndex = remember { mutableStateOf(0) }
+    val buttonState = remember { mutableStateOf(false) }
 
-    Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.verticalScroll(scrollState)) {
-        Spacer(Modifier.height(270.dp))
-        Card(modifier = Modifier.fillMaxSize(), colors = CardDefaults.cardColors(Color.White), shape = RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp), elevation = CardDefaults.cardElevation(5.dp)) {
-            Spacer(modifier = Modifier.height(15.dp))
-            Column {
-                Row(modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 15.dp, end = 15.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                    Text(text = "${destination.locatedState}, ${destination.locatedCountry}", color = Color.Black, fontWeight = FontWeight.Bold, fontSize = 18.sp)
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Image(painter = painterResource(id = R.drawable.star), contentDescription = "", modifier = Modifier.size(25.dp))
-                        Spacer(modifier = Modifier.width(5.dp))
-                        Text(text = destination.rating.toString(), fontSize = 15.sp)
-                    }
-                }
-                Spacer(modifier = Modifier.height(10.dp))
-                TabRow(selectedTabIndex = selectedIndex.value,
-                    modifier = Modifier
+    val shared = SharedPreferences.getInstance(LocalContext.current)
+    val currentUser = shared.getUser()
+
+    //BottomSheet
+    var sheetState by remember { mutableStateOf(false) }
+
+    Box(modifier = Modifier.fillMaxSize()){
+        Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier
+            .verticalScroll(scrollState)
+            .background(
+                Color.White
+            )) {
+            Spacer(Modifier.height(270.dp))
+            Card(modifier = Modifier.fillMaxSize(), colors = CardDefaults.cardColors(Color.White), shape = RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp), elevation = CardDefaults.cardElevation(5.dp)) {
+                Spacer(modifier = Modifier.height(15.dp))
+                Column {
+                    Row(modifier = Modifier
                         .fillMaxWidth()
-                        .wrapContentHeight(),
-                    indicator = {
-                        TabRowDefaults.Indicator(
-                            modifier = Modifier.tabIndicatorOffset(it[selectedIndex.value]),
-                            height = 3.dp,
-                            color = Color(android.graphics.Color.parseColor("#FF2F7A83"))
-                        )
-                    },
-                    containerColor = Color.White
-                ) {
-                    tabData.forEachIndexed { index, s ->
-                        Tab(selected = selectedIndex.value == index,
-                            onClick = {
-                                selectedIndex.value = index
-                                coroutineScope.launch { bodyPagerState.animateScrollToPage(index) } },
-                            text = {Text(text = s, color = Color.Black)}
-                        )
+                        .padding(start = 15.dp, end = 15.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                        Text(text = "${destination.locatedState}, ${destination.locatedCountry}", color = Color.Black, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Image(painter = painterResource(id = R.drawable.star), contentDescription = "", modifier = Modifier.size(25.dp))
+                            Spacer(modifier = Modifier.width(5.dp))
+                            Text(text = destination.rating.toString(), fontSize = 15.sp)
+                        }
                     }
-                }
-                Spacer(modifier = Modifier.height(10.dp))
-                when(selectedIndex.value){
-                    0 -> {
-                        OverView(destination = destination)
+                    Spacer(modifier = Modifier.height(10.dp))
+                    TabRow(selectedTabIndex = selectedIndex.value,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentHeight(),
+                        indicator = {
+                            TabRowDefaults.Indicator(
+                                modifier = Modifier.tabIndicatorOffset(it[selectedIndex.value]),
+                                height = 3.dp,
+                                color = Color(android.graphics.Color.parseColor("#FF2F7A83"))
+                            )
+                        },
+                        containerColor = Color.White
+                    ) {
+                        tabData.forEachIndexed { index, s ->
+                            Tab(selected = selectedIndex.value == index,
+                                onClick = {
+                                    selectedIndex.value = index
+                                    coroutineScope.launch { bodyPagerState.animateScrollToPage(index) } },
+                                text = {Text(text = s, color = Color.Black)}
+                            )
+                        }
                     }
-                    1 -> {
-                        Details(destination = destination)
-                    }
-                    2 -> {
-                        Reviews(destination = destination)
+                    Spacer(modifier = Modifier.height(10.dp))
+                    when(selectedIndex.value){
+                        0 -> {
+                            OverView(destination = destination)
+                            buttonState.value = false
+                        }
+                        1 -> {
+                            Details(destination = destination)
+                            buttonState.value = false
+                        }
+                        2 -> {
+                            Reviews(destination = destination)
+                            buttonState.value = true
+                            Log.d("ButtonState", "Body: ${buttonState.value}")
+                        }
                     }
                 }
             }
+        }
+        if (buttonState.value){
+            if (sheetState){
+                var myRating by remember { mutableStateOf(0) }
+                var commentText by remember { mutableStateOf("") }
+
+                ModalBottomSheet(
+                    onDismissRequest = { sheetState = false },
+                    dragHandle = { BottomSheetDefaults.DragHandle() },
+                    containerColor = Color.White
+                ) {
+                    Box(modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color.White)) {
+                        Spacer(modifier = Modifier.height(10.dp))
+                        Text(text = destination.name, fontSize = 23.sp, color = Color.Black, fontWeight = FontWeight.Bold, modifier = Modifier.align(
+                            Alignment.TopCenter))
+                        Column(modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 55.dp)) {
+                            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier
+                                .padding(start = 15.dp)
+                                .fillMaxWidth()) {
+                                Image(painter = painterResource(id = R.drawable.person_default_ic),
+                                    contentDescription = "",
+                                    modifier = Modifier
+                                        .size(40.dp)
+                                        .clip(
+                                            RoundedCornerShape(50)
+                                        ))
+                                Spacer(modifier = Modifier.width(10.dp))
+                                Column {
+                                    Text(text = currentUser!!.name, color = Color.Black, fontWeight = FontWeight.Bold, fontSize = 15.sp)
+                                    Text(text = "Country: ${destination.locatedCountry}", fontSize = 13.sp)
+                                }
+                            }
+                            Spacer(modifier = Modifier.height(10.dp))
+                            RatingBar(maxRating = 5, currentRating = myRating, onRatingChanged = {myRating = it})
+                            Spacer(modifier = Modifier.height(20.dp))
+                            OutlinedTextField(
+                                value = commentText, onValueChange = { commentText = it },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .defaultMinSize(minHeight = 100.dp)
+                                    .padding(start = 15.dp, end = 15.dp),
+                                shape = RoundedCornerShape(10.dp),
+                                label = { Text(text = "Write comment") },
+                                textStyle = TextStyle(Color.DarkGray, fontSize = 15.sp),
+                                colors = TextFieldDefaults.outlinedTextFieldColors(focusedBorderColor = Color(android.graphics.Color.parseColor("#FF2F7A83")))
+                            )
+                            Spacer(modifier = Modifier.height(100.dp))
+                        }
+                        Row(modifier = Modifier
+                            .fillMaxWidth()
+                            .align(Alignment.BottomCenter)
+                            .padding(top = 10.dp, bottom = 20.dp)
+                            .wrapContentHeight(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                            ExtendedFloatingActionButton(
+                                text = { Text(text = "Cancel") },
+                                icon = { Icon(imageVector = Icons.Outlined.Cancel, contentDescription = "") },
+                                onClick = { sheetState = false },
+                                containerColor = Color(android.graphics.Color.parseColor("#FF000024")),
+                                contentColor = Color.White,
+                                modifier = Modifier
+                                    .padding(start = 10.dp)
+                                    .weight(1f)
+                            )
+                            ExtendedFloatingActionButton(
+                                text = { Text(text = "Confirm") },
+                                icon = { Icon(imageVector = Icons.Filled.DoneOutline, contentDescription = "") },
+                                onClick = { sheetState = false },
+                                containerColor = Color(android.graphics.Color.parseColor("#49be25")),
+                                contentColor = Color.White,
+                                modifier = Modifier
+                                    .padding(start = 10.dp, end = 10.dp)
+                                    .weight(1f)
+                            )
+                        }
+                    }
+                }
+            }
+
+            ExtendedFloatingActionButton(
+                text = { Text(text = "Compose") },
+                icon = { Icon(imageVector = Icons.Outlined.Edit, contentDescription = "") },
+                onClick = { sheetState = true },
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(end = 15.dp, bottom = 10.dp),
+                containerColor = Color(android.graphics.Color.parseColor("#FF2F7A83")),
+                contentColor = Color.White
+            )
         }
     }
 }
@@ -202,21 +336,6 @@ private fun Body(destination: Destination, scrollState: ScrollState) {
 fun OverView(destination: Destination){
     val context = LocalContext.current
     Column(modifier = Modifier.fillMaxWidth()) {
-//        SubcomposeAsyncImage(
-//            model = destination.mainImage,
-//            contentDescription = "",
-//            loading = { CircularProgressIndicator()},
-//            contentScale = ContentScale.FillBounds,
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .padding(start = 10.dp, end = 10.dp)
-//                .height(200.dp))
-//        Box(modifier = Modifier
-//            .height(200.dp)
-//            .fillMaxWidth()
-//            .padding(start = 10.dp, end = 10.dp)){
-//            VideoPlayer(videoUrl = destination.overViewVideo, context = LocalContext.current)
-//        }
         Spacer(modifier = Modifier.height(10.dp))
         repeat(2){
             Text(text = destination.description,
@@ -287,8 +406,8 @@ fun ReviewItem(comment: Comment){
             Spacer(modifier = Modifier.width(5.dp))
             Column {
                 Text(text = comment.author.name, color = Color.Black, fontWeight = FontWeight.Bold, fontSize = 16.sp)
-                Row {
-                    Image(painter = painterResource(id = R.drawable.star), contentDescription = "", modifier = Modifier.size(25.dp))
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Image(painter = painterResource(id = R.drawable.star), contentDescription = "", modifier = Modifier.size(15.dp))
                     Spacer(modifier = Modifier.width(5.dp))
                     Text(text = comment.rating.toString(), fontSize = 14.sp)
                 }
@@ -387,4 +506,23 @@ fun VideoPlayer() {
     }
 
 }
+
+@Composable
+fun RatingBar(maxRating: Int, currentRating: Int, onRatingChanged: (Int) -> Unit){
+    Row(modifier = Modifier
+        .fillMaxWidth()
+        .padding(start = 10.dp, end = 10.dp), horizontalArrangement = Arrangement.Center) {
+        for (i in 1 .. maxRating){
+            Icon(imageVector = if (i <= currentRating) Icons.Filled.Star else Icons.Filled.StarOutline,
+                contentDescription = null,
+                tint = if (i <= currentRating) Color(android.graphics.Color.parseColor("#FFC928")) else Color.Unspecified,
+                modifier = Modifier
+                    .clickable { onRatingChanged(i) }
+                    .padding(5.dp)
+                    .size(35.dp)
+            )
+        }
+    }
+}
+
 

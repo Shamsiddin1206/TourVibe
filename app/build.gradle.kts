@@ -73,8 +73,12 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
-    implementation ("com.google.accompanist:accompanist-pager-indicators:0.27.1")
-    implementation("androidx.media3:media3-exoplayer:1.2.0")
-    implementation("androidx.media3:media3-ui:1.2.0")
+    implementation ("com.google.accompanist:accompanist-pager-indicators:0.28.0")
+    implementation("androidx.media3:media3-exoplayer:1.2.1")
+    implementation("androidx.media3:media3-ui:1.2.1")
+
+    implementation ("androidx.compose.material3:material3:1.3.0-alpha01")
+    implementation ("androidx.compose.material:material-icons-extended-android:1.5.0-beta02")
+
 
 }
