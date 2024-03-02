@@ -48,6 +48,7 @@ import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material3.BottomSheetDefaults
+//import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -139,7 +140,7 @@ private fun Header(mainImage: String, listOfImages: List<String>, scrollState: S
         }) {
         SubcomposeAsyncImage(
             model = mainImage,
-            contentDescription = "",
+            contentDescription = null,
             loading = { CircularProgressIndicator()},
             contentScale = ContentScale.FillBounds,
             modifier = Modifier.fillMaxSize()
@@ -158,9 +159,7 @@ private fun Header(mainImage: String, listOfImages: List<String>, scrollState: S
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalPagerApi::class,
-    ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class
-)
+@OptIn( ExperimentalMaterial3Api::class)
 @Composable
 private fun Body(destination: Destination, scrollState: ScrollState) {
     val tabData = listOf("Overview", "Details", "Reviews")
@@ -178,9 +177,7 @@ private fun Body(destination: Destination, scrollState: ScrollState) {
     Box(modifier = Modifier.fillMaxSize()){
         Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier
             .verticalScroll(scrollState)
-            .background(
-                Color.White
-            )) {
+        ) {
             Spacer(Modifier.height(270.dp))
             Card(modifier = Modifier.fillMaxSize(), colors = CardDefaults.cardColors(Color.White), shape = RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp), elevation = CardDefaults.cardElevation(5.dp)) {
                 Spacer(modifier = Modifier.height(15.dp))
@@ -231,7 +228,6 @@ private fun Body(destination: Destination, scrollState: ScrollState) {
                         2 -> {
                             Reviews(destination = destination)
                             buttonState.value = true
-                            Log.d("ButtonState", "Body: ${buttonState.value}")
                         }
                     }
                 }

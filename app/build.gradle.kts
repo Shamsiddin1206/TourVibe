@@ -78,7 +78,7 @@ dependencies {
     implementation("androidx.media3:media3-ui:1.2.1")
 
     implementation ("androidx.compose.material3:material3:1.3.0-alpha01")
-    implementation ("androidx.compose.material:material-icons-extended-android:1.5.0-beta02")
+    implementation ("androidx.compose.material:material-icons-extended-android:1.7.0-alpha03")
 
 
 }
