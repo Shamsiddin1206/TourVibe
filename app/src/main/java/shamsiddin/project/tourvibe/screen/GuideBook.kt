@@ -1,8 +1,8 @@
 package shamsiddin.project.tourvibe.screen
 
-import android.graphics.BlurMaskFilter.Blur
+import android.annotation.SuppressLint
 import android.util.Log
-import androidx.compose.foundation.Canvas
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -20,7 +20,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -29,15 +28,27 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.BlurredEdgeTreatment
@@ -67,34 +78,38 @@ import shamsiddin.project.tourvibe.model.User
 import shamsiddin.project.tourvibe.navigation.ScreenType
 import shamsiddin.project.tourvibe.utils.SharedPreferences
 
+@OptIn(ExperimentalMaterial3Api::class)
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun GuideBook(navController: NavController) {
+    val context = LocalContext.current
     val user = User(0, "Shamsiddin Tohirov", "takhirovshamsiddin@gmail.com", "+998 99 008 65 08", "Uzbekistan", null, null, null, "12345")
     val shared = SharedPreferences.getInstance(LocalContext.current)
     shared.setUser(user)
-    val mutableList = mutableListOf<CategoryData>(
-        CategoryData(
-            "Beach",
-            "https://t3.ftcdn.net/jpg/03/82/24/44/360_F_382244401_FNIivSDbE7ojw5sT70WYVgmFsw2R7DHD.jpg"
-        ),
-        CategoryData(
-            "Beach",
-            "https://t3.ftcdn.net/jpg/03/82/24/44/360_F_382244401_FNIivSDbE7ojw5sT70WYVgmFsw2R7DHD.jpg"
-        ),
-        CategoryData(
-            "Beach",
-            "https://t3.ftcdn.net/jpg/03/82/24/44/360_F_382244401_FNIivSDbE7ojw5sT70WYVgmFsw2R7DHD.jpg"
-        ),
-        CategoryData(
-            "Beach",
-            "https://t3.ftcdn.net/jpg/03/82/24/44/360_F_382244401_FNIivSDbE7ojw5sT70WYVgmFsw2R7DHD.jpg"
-        ),
-        CategoryData(
-            "Beach",
-            "https://t3.ftcdn.net/jpg/03/82/24/44/360_F_382244401_FNIivSDbE7ojw5sT70WYVgmFsw2R7DHD.jpg"
-        )
-    )
+//    val mutableList = mutableListOf<CategoryData>(
+//        CategoryData(
+//            "Beach",
+//            "https://t3.ftcdn.net/jpg/03/82/24/44/360_F_382244401_FNIivSDbE7ojw5sT70WYVgmFsw2R7DHD.jpg"
+//        ),
+//        CategoryData(
+//            "Beach",
+//            "https://t3.ftcdn.net/jpg/03/82/24/44/360_F_382244401_FNIivSDbE7ojw5sT70WYVgmFsw2R7DHD.jpg"
+//        ),
+//        CategoryData(
+//            "Beach",
+//            "https://t3.ftcdn.net/jpg/03/82/24/44/360_F_382244401_FNIivSDbE7ojw5sT70WYVgmFsw2R7DHD.jpg"
+//        ),
+//        CategoryData(
+//            "Beach",
+//            "https://t3.ftcdn.net/jpg/03/82/24/44/360_F_382244401_FNIivSDbE7ojw5sT70WYVgmFsw2R7DHD.jpg"
+//        ),
+//        CategoryData(
+//            "Beach",
+//            "https://t3.ftcdn.net/jpg/03/82/24/44/360_F_382244401_FNIivSDbE7ojw5sT70WYVgmFsw2R7DHD.jpg"
+//        )
+//    )
     val commentsList = mutableListOf<Comment>(
+        Comment(0, "", user, "23/02/2024", "Farrukh Buriyev, Ibrohim Mukhtarov, Xoliqov Abdulbosit, Adilov Abdumajid",4.8),
         Comment(0, "", user, "23/02/2024", "Farrukh Buriyev, Ibrohim Mukhtarov, Xoliqov Abdulbosit, Adilov Abdumajid",4.8)
     )
     val destinationList = mutableListOf<Destination>(
@@ -105,12 +120,22 @@ fun GuideBook(navController: NavController) {
                 "Various rulers during their reign would change the main significance of the square, but since those times and up to now, Registan has always been the center of the city social life.\n" +
                 "\n" +
                 "There are three madrassahs on the square: Ulugh Beg, Sherdor and Tilla-Kori, that are the main sights of the city. They were erected by two rulers at different times.", 4.8, commentsList, listOf(), "Uzbekistan", "Samarkand", "https://youtu.be/AyF6JsliDIc"),
-        Destination(1, "https://cdn.elebase.io/173fe953-8a63-4a8a-8ca3-1bacb56d78a5/85de9252-cff1-4907-beea-e984ed9ccf1a-shutterstock_2084584372.jpg?w=1000&h=500&fit=crop&q=75", listOf("", "", ""), "Itchan Kala", "", 4.8, null, listOf(), "", "", ""),
-        Destination(2, "https://uzbek-travel.com/images/uz/Landmarks/Tashkent/Amir_Temur_Square/amir_temur_square_4.jpg", listOf("", "", ""), "Amir Temur Square", "", 4.8, null, listOf(), "", "", ""),
-        Destination(3, "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/18/03/00/52/la-moschea-di-kok-gumbaz.jpg?w=500&h=400&s=1", listOf("", "", ""), "Shakhrisabz", "", 4.8, null, listOf(), "", "", ""),
-        Destination(4, "https://api.society.uz/media/news/BOZ_4642.medium.webp", listOf("", "", ""), "Jarkurgan Minaret", "", 4.8, null, listOf(), "", "", ""),
-        Destination(5, "https://silkroaddestinations.com/wp-content/uploads/2016/12/sam-observatory-ulugbek-srd-860x424.jpg", listOf("", "", ""), "Ulugbek Observatory", "", 4.8, null, listOf(), "", "", "")
+        Destination(1, "https://cdn.elebase.io/173fe953-8a63-4a8a-8ca3-1bacb56d78a5/85de9252-cff1-4907-beea-e984ed9ccf1a-shutterstock_2084584372.jpg?w=1000&h=500&fit=crop&q=75", listOf("", "", ""), "Itchan Kala", "", 4.8, null, listOf(), "", "Khiva", ""),
+        Destination(2, "https://uzbek-travel.com/images/uz/Landmarks/Tashkent/Amir_Temur_Square/amir_temur_square_4.jpg", listOf("", "", ""), "Amir Temur Square", "", 4.8, null, listOf(), "", "Tashkent", ""),
+        Destination(3, "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/18/03/00/52/la-moschea-di-kok-gumbaz.jpg?w=500&h=400&s=1", listOf("", "", ""), "Shakhrisabz", "", 4.8, null, listOf(), "", "Bukhara", ""),
+        Destination(4, "https://api.society.uz/media/news/BOZ_4642.medium.webp", listOf("", "", ""), "Jarkurgan Minaret", "", 4.8, null, listOf(), "", "Fergana", ""),
+        Destination(5, "https://silkroaddestinations.com/wp-content/uploads/2016/12/sam-observatory-ulugbek-srd-860x424.jpg", listOf("", "", ""), "Ulugbek Observatory", "", 4.8, null, listOf(), "", "Samarkand", "")
     )
+
+    //Category
+    val list = listOf("Tashkent", "Samarkand", "Bukhara", "Fergana", "Andijan", "Namangan")
+    val selected = remember { mutableIntStateOf(0) }
+
+
+    //Search
+    val searchList = remember { mutableStateListOf<Destination>() }
+    var searchText by remember { mutableStateOf("") }
+    var active by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -121,8 +146,7 @@ fun GuideBook(navController: NavController) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(10.dp), verticalAlignment = Alignment.CenterVertically
-        ) {
+                .padding(10.dp), verticalAlignment = Alignment.CenterVertically) {
             Image(
                 painter = painterResource(id = R.drawable.person_default_ic),
                 contentDescription = "",
@@ -138,42 +162,101 @@ fun GuideBook(navController: NavController) {
                 Text(text = "Buriyev Farrukh", fontSize = 15.sp)
             }
         }
+//        Spacer(modifier = Modifier.height(10.dp))
+//        LazyRow(
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .padding(start = 10.dp)
+//        ) {
+//            items(mutableList) {
+//                CategoryItem(categoryData = it)
+//            }
+//        }
         Spacer(modifier = Modifier.height(10.dp))
-        LazyRow(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 10.dp)
-        ) {
-            items(mutableList) {
-                CategoryItem(categoryData = it)
-            }
-        }
-        Spacer(modifier = Modifier.height(10.dp))
-
-        val selected = remember {
-            mutableIntStateOf(0)
-        }
         LazyRow (
             Modifier
                 .fillMaxWidth()
                 .padding(start = 5.dp, end = 5.dp)) {
-            val list = listOf("Tashkent", "Samarkand", "Bukhara", "Fergana", "Andijan", "Namangan")
             items(list.size + 1) {
                 val name = if (it == 0) "All" else list[it - 1]
-                StateItem(name = name, selected, it)
+                Column (
+                    Modifier
+                        .clickable {
+                            selected.value = it
+                        }
+                        .padding(end = 5.dp, start = 5.dp)) {
+                    Text(text = name,
+                        color = if (selected.value != it) Color.Black else Color(android.graphics.Color.parseColor("#FF2F7A83")))
+                }
             }
         }
-        Spacer(modifier = Modifier.height(10.dp))
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(2)
-        ){
-            items(destinationList){
-                PlaceItem(destination = it, navController = navController)
-            }
-        }
-//        val destination = Destination(0, "https://helpx.adobe.com/content/dam/help/en/photoshop/using/convert-color-image-black-white/jcr_content/main-pars/before_and_after/image-before/Landscape-Color.jpg", listOf("", "", ""), "", "", (4.8), category = "", locatedCountry = "Uzbekistan", locatedState = "Samarkand", comments = null)
-//        PlaceItem(destination, navController)
 
+        Scaffold {
+            SearchBar(
+                query = searchText,
+                onQueryChange = { searchText = it},
+                onSearch = {
+                    active = false
+                },
+                active = active,
+                onActiveChange = { active = it },
+                placeholder = {
+                    Text(text = "Search by name")
+                },
+                leadingIcon = {
+                    Icon(imageVector = Icons.Default.Search, contentDescription = "")
+                },
+                trailingIcon = {
+                    if (active){
+                        Icon(imageVector = Icons.Default.Clear, contentDescription = "", modifier = Modifier.clickable {
+                            if (searchText.isNotEmpty()){
+                                searchText = ""
+                            }else {
+                                active = false
+                            }
+                            searchList.clear()
+                        })
+                    }
+                },
+            ){
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(2)
+                ){
+                    if (active){
+                        if (searchText.isNotEmpty()){
+                            searchList.clear()
+                            destinationList.forEach {
+                                if (it.name.trim().toLowerCase().contains(searchText.trim().toLowerCase())){
+                                    if (selected.value == 0){
+                                        searchList.add(it)
+                                    }else if (it.locatedState == list[selected.value-1]){
+                                        searchList.add(it)
+                                    }
+                                }
+                            }
+                            if (searchList.isNotEmpty()){
+                                items(searchList.size){ index ->
+                                    PlaceItem(destination = searchList[index], navController = navController)
+                                }
+                            }else{
+                                Toast.makeText(context, "Not Found", Toast.LENGTH_SHORT).show()
+                                return@LazyVerticalGrid
+                            }
+                        }
+                    }
+                }
+            }
+            if (!active){
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(2),
+                    modifier = Modifier.padding(top = 70.dp)
+                ){
+                    items(destinationList){
+                        PlaceItem(destination = it, navController = navController)
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -184,52 +267,39 @@ fun GuideBookPreview() {
 //    PlaceItem(destination = destination, rememberNavController())
 }
 
-@Composable
-fun CategoryItem(categoryData: CategoryData) {
-    Card(
-        modifier = Modifier
-            .height(40.dp)
-            .padding(end = 10.dp),
-        elevation = CardDefaults.cardElevation(5.dp),
-        shape = RoundedCornerShape(5.dp),
-        colors = CardDefaults.cardColors(Color.White)
-    ) {
-        Row(
-            modifier = Modifier.fillMaxHeight(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        ) {
-            SubcomposeAsyncImage(
-                model = categoryData.image,
-                loading = { CircularProgressIndicator() },
-                contentDescription = "",
-                modifier = Modifier
-                    .size(height = 35.dp, width = 35.dp)
-                    .padding(start = (2.5).dp),
-                contentScale = ContentScale.FillBounds
-            )
-            Text(
-                text = categoryData.type,
-                color = Color.Black,
-                fontSize = 15.sp,
-                modifier = Modifier.padding(start = 5.dp, end = 5.dp)
-            )
-        }
-    }
-}
-
-@Composable
-fun StateItem(name: String, selectedIndex: MutableState<Int>, index: Int) {
-    Column (
-        Modifier
-            .clickable {
-                selectedIndex.value = index
-            }
-            .padding(end = 5.dp, start = 5.dp)) {
-        Text(text = name,
-            color = if (selectedIndex.value != index) Color.Black else Color(android.graphics.Color.parseColor("#FF2F7A83")))
-    }
-}
+//@Composable
+//fun CategoryItem(categoryData: CategoryData) {
+//    Card(
+//        modifier = Modifier
+//            .height(40.dp)
+//            .padding(end = 10.dp),
+//        elevation = CardDefaults.cardElevation(5.dp),
+//        shape = RoundedCornerShape(5.dp),
+//        colors = CardDefaults.cardColors(Color.White)
+//    ) {
+//        Row(
+//            modifier = Modifier.fillMaxHeight(),
+//            verticalAlignment = Alignment.CenterVertically,
+//            horizontalArrangement = Arrangement.Center
+//        ) {
+//            SubcomposeAsyncImage(
+//                model = categoryData.image,
+//                loading = { CircularProgressIndicator() },
+//                contentDescription = "",
+//                modifier = Modifier
+//                    .size(height = 35.dp, width = 35.dp)
+//                    .padding(start = (2.5).dp),
+//                contentScale = ContentScale.FillBounds
+//            )
+//            Text(
+//                text = categoryData.type,
+//                color = Color.Black,
+//                fontSize = 15.sp,
+//                modifier = Modifier.padding(start = 5.dp, end = 5.dp)
+//            )
+//        }
+//    }
+//}
 
 @Composable
 fun PlaceItem(destination: Destination, navController: NavController){
