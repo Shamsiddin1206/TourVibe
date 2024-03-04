@@ -169,19 +169,19 @@ private fun Body(destination: Destination, scrollState: ScrollState) {
 
 
     Box(modifier = Modifier.fillMaxSize()){
-//        if (imageState){
-//            Row(modifier = Modifier
-//                .fillMaxSize()
-//                .background(color = Color.Black.copy(0.9f))
-//                .clickable { imageState = false },
-//                verticalAlignment = Alignment.CenterVertically
-//            ) {
-//                ViewPager(pagerState = viewPagerState,
-//                    listOfImages = placeImages,
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//                        .aspectRatio(1.4f)) }
-//        }else{
+        if (imageState){
+            Row(modifier = Modifier
+                .fillMaxSize()
+                .background(color = Color.Black.copy(0.9f))
+                .clickable { imageState = false },
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                ViewPager(pagerState = viewPagerState,
+                    listOfImages = placeImages,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(1.4f)) }
+        }else{
             Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier
                 .verticalScroll(scrollState)
             ) {
@@ -335,7 +335,7 @@ private fun Body(destination: Destination, scrollState: ScrollState) {
                         contentColor = Color.White
                     )
                 }
-//        }
+        }
     }
 }
 
