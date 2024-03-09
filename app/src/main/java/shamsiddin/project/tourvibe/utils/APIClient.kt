@@ -4,12 +4,9 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object APIClient {
-    const val BASE_URL = "https://"
-
+    private const val baseUrl = "https://shamsiddin12.pythonanywhere.com/"
     fun getInstance(): Retrofit {
-
-        return Retrofit.Builder().baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
+        return Retrofit.Builder().baseUrl(baseUrl)
+            .addConverterFactory(GsonConverterFactory.create()).build()
     }
 }

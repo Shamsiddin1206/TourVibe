@@ -1,5 +1,9 @@
 package shamsiddin.project.tourvibe.model
 
+import android.net.Uri
+import com.google.gson.Gson
+import shamsiddin.project.tourvibe.utils.JsonNavType
+
 data class Food(
     var id: Int,
     var mainImage: String,
@@ -13,4 +17,13 @@ data class Food(
     var locatedCountry: String,
     var caloryInfo: String,
     var price: String
-)
+){
+    override fun toString(): String = Uri.encode(Gson().toJson(this))
+
+}
+
+class FoodArgType : JsonNavType<Food>(){
+    override fun fromJsonParse(value: String): Food = Gson().fromJson(value, Food::class.java)
+
+    override fun Food.getJsonParse(): String = Gson().toJson(this)
+}

@@ -1,8 +1,8 @@
 package shamsiddin.project.tourvibe.utils
 
 import android.content.Context
-import com.google.common.reflect.TypeToken
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import shamsiddin.project.tourvibe.model.User
 
 class SharedPreferences private constructor(context: Context){

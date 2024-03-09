@@ -9,8 +9,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import shamsiddin.project.tourvibe.screen.GuideBook
 import shamsiddin.project.tourvibe.screen.Hotels
-import shamsiddin.project.tourvibe.screen.Menu
 import shamsiddin.project.tourvibe.screen.Profile
+import shamsiddin.project.tourvibe.screen.menu.Menu
 
 @Composable
 fun BottomBatNavGraph(navController: NavHostController, bottomNavController: NavHostController){
