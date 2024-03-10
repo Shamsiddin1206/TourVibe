@@ -64,11 +64,12 @@ import shamsiddin.project.tourvibe.R
 import shamsiddin.project.tourvibe.model.Comment
 import shamsiddin.project.tourvibe.model.Destination
 import shamsiddin.project.tourvibe.model.User
+import shamsiddin.project.tourvibe.navigation.ScreenType
 import shamsiddin.project.tourvibe.utils.Manager
 import shamsiddin.project.tourvibe.utils.SharedPreferences
 
 @OptIn(ExperimentalMaterial3Api::class)
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "MutableCollectionMutableState")
 @Composable
 fun GuideBook(navController: NavController) {
     val context = LocalContext.current
@@ -116,17 +117,32 @@ fun GuideBook(navController: NavController) {
 //        Destination(5, "https://silkroaddestinations.com/wp-content/uploads/2016/12/sam-observatory-ulugbek-srd-860x424.jpg", listOf("", "", ""), "Ulugbek Observatory", "", 4.8, null, listOf(), "", "Samarkand", "")
 //    )
 
-    var destinationList = mutableListOf<Destination>()
+
+    var allDestinations by remember { mutableStateOf(listOf<Destination>()) }
+    var destinationList by remember { mutableStateOf(mutableListOf<Destination>()) }
     Manager.getDestinations {
-        destinationList = it.toMutableList()
+        allDestinations = it.toMutableList()
     }
 
     //Category
-    var list = listOf<String>()
+    var list by remember { mutableStateOf(listOf<String>()) }
     Manager.getDestinationStates {
         list = it.reversed()
     }
+
     val selected = remember { mutableIntStateOf(0) }
+
+    if (selected.intValue == 0){
+        destinationList = allDestinations.toMutableList()
+    }else{
+        destinationList.clear()
+        allDestinations.forEach {
+            if (it.locatedState == list[selected.intValue-1]){
+                destinationList.add(it)
+            }
+        }
+        Log.d("Dest", "GuideBook: ${destinationList.joinToString()}")
+    }
 
 
     //Search
@@ -222,7 +238,7 @@ fun GuideBook(navController: NavController) {
                     if (active){
                         if (searchText.isNotEmpty()){
                             searchList.clear()
-                            destinationList.forEach {
+                            allDestinations.forEach {
                                 if (it.name.trim().toLowerCase().contains(searchText.trim().toLowerCase())){
                                     if (selected.intValue == 0){
                                         searchList.add(it)
