@@ -188,6 +188,7 @@ private fun Body(destination: Destination, scrollState: ScrollState) {
                     Spacer(
                         Modifier
                             .height(270.dp)
+                            .fillMaxWidth()
                             .clickable { imageState = true })
                     Card(modifier = Modifier.fillMaxSize(), colors = CardDefaults.cardColors(Color.White), shape = RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp), elevation = CardDefaults.cardElevation(5.dp)) {
                         Spacer(modifier = Modifier.height(15.dp))

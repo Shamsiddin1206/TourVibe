@@ -35,6 +35,9 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -63,6 +66,7 @@ import shamsiddin.project.tourvibe.model.Destination
 import shamsiddin.project.tourvibe.model.User
 import shamsiddin.project.tourvibe.utils.SharedPreferences
 
+@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun GuideBook(navController: NavController) {
@@ -132,7 +136,7 @@ fun GuideBook(navController: NavController) {
                 .fillMaxWidth()
                 .padding(10.dp), verticalAlignment = Alignment.CenterVertically) {
             Image(
-                painter = painterResource(id = R.drawable.person),
+                painter = painterResource(id = R.drawable.person_default_ic),
                 contentDescription = "",
                 modifier = Modifier
                     .size(50.dp)
@@ -166,81 +170,81 @@ fun GuideBook(navController: NavController) {
                 Column (
                     Modifier
                         .clickable {
-                            selected.value = it
+                            selected.intValue = it
                         }
                         .padding(end = 5.dp, start = 5.dp)) {
                     Text(text = name,
-                        color = if (selected.value != it) Color.Black else Color(android.graphics.Color.parseColor("#FF2F7A83")))
+                        color = if (selected.intValue != it) Color.Black else Color(android.graphics.Color.parseColor("#FF2F7A83")))
                 }
             }
         }
 
-//        Scaffold(modifier = Modifier.background(Color.White), containerColor = Color.White) {
-//            SearchBar(
-//                query = searchText,
-//                onQueryChange = { searchText = it},
-//                onSearch = {
-//                    active = false
-//                },
-//                active = active,
-//                onActiveChange = { active = it },
-//                placeholder = {
-//                    Text(text = "Search by name")
-//                },
-//                leadingIcon = {
-//                    Icon(imageVector = Icons.Default.Search, contentDescription = "")
-//                },
-//                trailingIcon = {
-//                    if (active){
-//                        Icon(imageVector = Icons.Default.Clear, contentDescription = "", modifier = Modifier.clickable {
-//                            if (searchText.isNotEmpty()){
-//                                searchText = ""
-//                            }else {
-//                                active = false
-//                            }
-//                            searchList.clear()
-//                        })
-//                    }
-//                },
-//            ){
-//                LazyVerticalGrid(
-//                    columns = GridCells.Fixed(2)
-//                ){
-//                    if (active){
-//                        if (searchText.isNotEmpty()){
-//                            searchList.clear()
-//                            destinationList.forEach {
-//                                if (it.name.trim().toLowerCase().contains(searchText.trim().toLowerCase())){
-//                                    if (selected.value == 0){
-//                                        searchList.add(it)
-//                                    }else if (it.locatedState == list[selected.value-1]){
-//                                        searchList.add(it)
-//                                    }
-//                                }
-//                            }
-//                            if (searchList.isNotEmpty()){
-//                                items(searchList.size){ index ->
-//                                    PlaceItem(destination = searchList[index], navController = navController)
-//                                }
-//                            }else{
-//                                Toast.makeText(context, "Not Found", Toast.LENGTH_SHORT).show()
-//                                return@LazyVerticalGrid
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//            if (!active){
-//                LazyVerticalGrid(
-//                    columns = GridCells.Fixed(2),
-//                    modifier = Modifier.padding(top = 70.dp)
-//                ){
-//                    items(destinationList){
-//                        PlaceItem(destination = it, navController = navController)
-//                    }
-//                }
-//            }
-//        }
+        Scaffold(modifier = Modifier.background(Color.White), containerColor = Color.White) {
+            SearchBar(
+                query = searchText,
+                onQueryChange = { searchText = it},
+                onSearch = {
+                    active = false
+                },
+                active = active,
+                onActiveChange = { active = it },
+                placeholder = {
+                    Text(text = "Search by name")
+                },
+                leadingIcon = {
+                    Icon(imageVector = Icons.Default.Search, contentDescription = "")
+                },
+                trailingIcon = {
+                    if (active){
+                        Icon(imageVector = Icons.Default.Clear, contentDescription = "", modifier = Modifier.clickable {
+                            if (searchText.isNotEmpty()){
+                                searchText = ""
+                            }else {
+                                active = false
+                            }
+                            searchList.clear()
+                        })
+                    }
+                },
+            ){
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(2)
+                ){
+                    if (active){
+                        if (searchText.isNotEmpty()){
+                            searchList.clear()
+                            destinationList.forEach {
+                                if (it.name.trim().toLowerCase().contains(searchText.trim().toLowerCase())){
+                                    if (selected.intValue == 0){
+                                        searchList.add(it)
+                                    }else if (it.locatedState == list[selected.intValue-1]){
+                                        searchList.add(it)
+                                    }
+                                }
+                            }
+                            if (searchList.isNotEmpty()){
+                                items(searchList.size){ index ->
+                                    PlaceItem(destination = searchList[index], navController = navController)
+                                }
+                            }else{
+                                Toast.makeText(context, "Not Found", Toast.LENGTH_SHORT).show()
+                                return@LazyVerticalGrid
+                            }
+                        }
+                    }
+                }
+            }
+            if (!active){
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(2),
+                    modifier = Modifier.padding(top = 70.dp)
+                ){
+                    items(destinationList){
+                        PlaceItem(destination = it, navController = navController)
+                    }
+                }
+            }
+        }
     }
 }
 

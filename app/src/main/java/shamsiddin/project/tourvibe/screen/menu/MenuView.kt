@@ -11,7 +11,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
@@ -88,7 +87,7 @@ fun Menu(navController: NavController) {
                 ) {
                     IconButton(onClick = { /* Handle settings click */ }) {
                         Icon(
-                            painter = painterResource(id = shamsiddin.project.tourvibe.R.drawable.person),
+                            painter = painterResource(id = shamsiddin.project.tourvibe.R.drawable.person_default_ic),
                             modifier = Modifier.size(32.dp),
                             contentDescription = "Person",
                         )
