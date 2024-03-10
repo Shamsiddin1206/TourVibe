@@ -13,8 +13,13 @@ import shamsiddin.project.tourvibe.model.User
 interface APIService {
     @GET("foods")
     fun getFoods(): Call<List<Food>>
-    @GET("destinations")
+
+
+    @GET("destinations/")
     fun getDestinations(): Call<List<Destination>>
+    @GET("destinations/states/")
+    fun getDestinationStates(): Call<List<String>>
+
     @GET("restaurants")
     fun getRestaurants(): Call<List<Restaurant>>
     @GET("hotels")

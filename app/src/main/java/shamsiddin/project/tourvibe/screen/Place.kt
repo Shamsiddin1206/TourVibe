@@ -148,7 +148,7 @@ private fun Header(mainImage: String, listOfImages: List<String>, scrollState: S
 @Composable
 private fun Body(destination: Destination, scrollState: ScrollState) {
     //TopBar
-    val tabData = listOf("Overview", "Details", "Reviews")
+    val tabData = listOf("Overview", "History", "Reviews")
     val bodyPagerState = rememberPagerState(pageCount = {tabData.size})
     val coroutineScope = rememberCoroutineScope()
     val selectedIndex = remember { mutableStateOf(0) }
@@ -345,22 +345,6 @@ private fun Body(destination: Destination, scrollState: ScrollState) {
 fun OverView(destination: Destination){
     Column(modifier = Modifier.fillMaxWidth()) {
         Spacer(modifier = Modifier.height(10.dp))
-        repeat(2){
-            Text(text = destination.description,
-                style = MaterialTheme.typography.bodyMedium,
-                textAlign = TextAlign.Justify,
-                modifier = Modifier
-                    .background(Color.White)
-                    .padding(16.dp),
-                color = Color.Black
-            )
-        }
-    }
-}
-
-@Composable
-fun Details(destination: Destination){
-    repeat(5){
         Text(text = destination.description,
             style = MaterialTheme.typography.bodyMedium,
             textAlign = TextAlign.Justify,
@@ -370,6 +354,18 @@ fun Details(destination: Destination){
             color = Color.Black
         )
     }
+}
+
+@Composable
+fun Details(destination: Destination){
+    Text(text = destination.history,
+        style = MaterialTheme.typography.bodyMedium,
+        textAlign = TextAlign.Justify,
+        modifier = Modifier
+            .background(Color.White)
+            .padding(16.dp),
+        color = Color.Black
+    )
 }
 
 @Composable
