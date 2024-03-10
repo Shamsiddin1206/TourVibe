@@ -1,5 +1,7 @@
 package shamsiddin.project.tourvibe.utils
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.util.Log
 import retrofit2.Call
 import retrofit2.Callback
@@ -8,6 +10,7 @@ import shamsiddin.project.tourvibe.model.Destination
 import shamsiddin.project.tourvibe.model.Food
 import shamsiddin.project.tourvibe.model.Hotel
 import shamsiddin.project.tourvibe.model.Restaurant
+import shamsiddin.project.tourvibe.model.User
 
 class Manager {
 
@@ -80,6 +83,48 @@ class Manager {
                 override fun onFailure(call: Call<List<Hotel>>, t: Throwable) {
                     Log.d("TAG", "$t")
                     callback(emptyList())
+                }
+            })
+        }
+
+        fun giveToken(context: Context, user: String) {
+            val sharedPreferences: SharedPreferences =
+                context.getSharedPreferences("db", Context.MODE_PRIVATE)
+            val editor: SharedPreferences.Editor = sharedPreferences.edit()
+            editor.putString("user", user)
+            editor.apply()
+        }
+
+        fun getToken(context: Context): String {
+            val sharedPreferences: SharedPreferences =
+                context.getSharedPreferences("db", Context.MODE_PRIVATE)
+            return sharedPreferences.getString("user", "") ?: ""
+        }
+
+        fun register(email: String,password: String,name:String,country:String, callback: (String) -> Unit) {
+            val api = APIClient.getInstance().create(APIService::class.java)
+            api.register(email,password,name,country).enqueue(object : Callback<String> {
+                override fun onResponse(call: Call<String>, response: Response<String>) {
+                    callback(response.body()!!)
+                }
+
+                override fun onFailure(call: Call<String>, t: Throwable) {
+                    Log.d("TAG", "$t")
+
+                }
+            })
+        }
+
+        fun login(email: String,password: String, callback: (String) -> Unit) {
+            val api = APIClient.getInstance().create(APIService::class.java)
+            api.login(email,password).enqueue(object : Callback<String> {
+                override fun onResponse(call: Call<String>, response: Response<String>) {
+                    callback(response.body()!!)
+                }
+
+                override fun onFailure(call: Call<String>, t: Throwable) {
+                    Log.d("TAG", "$t")
+
                 }
             })
         }

@@ -73,7 +73,7 @@ fun GuideBook(navController: NavController) {
     val context = LocalContext.current
     val user = User(0, "Shamsiddin Tohirov", "takhirovshamsiddin@gmail.com", "+998 99 008 65 08", "Uzbekistan", null, null, null, "12345")
     val shared = SharedPreferences.getInstance(LocalContext.current)
-    shared.setUser(user)
+
 //    val mutableList = mutableListOf<CategoryData>(
 //        CategoryData(
 //            "Beach",

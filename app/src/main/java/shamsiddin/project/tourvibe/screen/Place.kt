@@ -87,6 +87,7 @@ import kotlinx.coroutines.launch
 import shamsiddin.project.tourvibe.R
 import shamsiddin.project.tourvibe.model.Comment
 import shamsiddin.project.tourvibe.model.Destination
+import shamsiddin.project.tourvibe.utils.Manager
 import shamsiddin.project.tourvibe.utils.SharedPreferences
 
 
@@ -154,7 +155,7 @@ private fun Body(destination: Destination, scrollState: ScrollState) {
 
     //Comments
     val shared = SharedPreferences.getInstance(LocalContext.current)
-    val currentUser = shared.getUser()
+    val currentUser = Manager.getToken(LocalContext.current)
     val buttonState = remember { mutableStateOf(false) }
 
     //ViewPager
@@ -275,7 +276,7 @@ private fun Body(destination: Destination, scrollState: ScrollState) {
                                                 ))
                                         Spacer(modifier = Modifier.width(10.dp))
                                         Column {
-                                            Text(text = currentUser!!.name, color = Color.Black, fontWeight = FontWeight.Bold, fontSize = 15.sp)
+                                            Text(text = currentUser, color = Color.Black, fontWeight = FontWeight.Bold, fontSize = 15.sp)
                                             Text(text = "Country: ${destination.locatedCountry}", fontSize = 13.sp)
                                         }
                                     }

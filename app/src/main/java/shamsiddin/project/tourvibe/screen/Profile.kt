@@ -1,5 +1,6 @@
 package shamsiddin.project.tourvibe.screen
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,6 +21,7 @@ import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material3.Button
 import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -27,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -34,12 +37,15 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.SubcomposeAsyncImage
 import shamsiddin.project.tourvibe.R
+import shamsiddin.project.tourvibe.navigation.ScreenType
+import shamsiddin.project.tourvibe.utils.Manager
 import shamsiddin.project.tourvibe.utils.SharedPreferences
 
 @Composable
 fun Profile(navController: NavController){
     val shared = SharedPreferences.getInstance(LocalContext.current)
-    val user = shared.getUser()
+    val context = LocalContext.current
+    val user = Manager.getToken(context)
 
     Box(modifier = Modifier
         .fillMaxSize()
@@ -52,7 +58,7 @@ fun Profile(navController: NavController){
             Text(text = "Profile", fontSize = 22.sp, fontWeight = FontWeight.Bold, color = Color.Black)
             Spacer(modifier = Modifier.height(30.dp))
             Box(modifier = Modifier.size(150.dp)) {
-                SubcomposeAsyncImage(model = if (user!!.image.isNullOrEmpty()) R.drawable.person_default_ic else user.image, contentDescription = "", modifier = Modifier
+                SubcomposeAsyncImage(model = R.drawable.person_default_ic, contentDescription = "", modifier = Modifier
                     .fillMaxSize()
                     .clip(
                         CircleShape
@@ -72,8 +78,13 @@ fun Profile(navController: NavController){
                 }
             }
             Spacer(modifier = Modifier.height(10.dp))
-            Text(text = user!!.name, fontWeight = FontWeight.Bold, color = Color.Black, fontSize = 25.sp)
-
+            Text(text = user, fontWeight = FontWeight.Bold, color = Color.Black, fontSize = 25.sp)
+            Button(onClick = {
+                Manager.giveToken(context,"")
+                navController.navigate(ScreenType.Login.route)
+            }) {
+                androidx.compose.material3.Text(text = "log out", color = Color.Red)
+            }
         }
     }
 }

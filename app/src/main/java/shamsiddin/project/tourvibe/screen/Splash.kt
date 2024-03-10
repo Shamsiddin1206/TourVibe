@@ -18,15 +18,20 @@ import kotlinx.coroutines.delay
 import shamsiddin.project.tourvibe.R
 import shamsiddin.project.tourvibe.navigation.ScreenType
 import shamsiddin.project.tourvibe.ui.theme.GreenPrimary
+import shamsiddin.project.tourvibe.utils.Manager
 
 @Composable
 
 fun Splash(navController:NavController) {
 
     val context = LocalContext.current
+    val user = Manager.getToken(context)
     LaunchedEffect(true) {
         delay(3250)
+        if (user == "" ){
             navController.navigate(ScreenType.Default.route)
+        }
+         else{   navController.navigate(ScreenType.Default.route)}
         }
 
 

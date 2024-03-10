@@ -27,13 +27,4 @@ class SharedPreferences private constructor(context: Context){
         return shared.getString("Country", "")!!
     }
 
-    fun setUser(user: User){
-        edit.putString("User", gson.toJson(user)).apply()
-    }
-    fun getUser():User?{
-        val data = shared.getString("User", "")
-        if (data == "") return null
-        val typeToken = object : TypeToken<User>() {}.type
-        return gson.fromJson(data, typeToken)
-    }
 }
