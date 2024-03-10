@@ -66,6 +66,24 @@ class Manager {
             })
         }
 
+        fun getDestinationStates(callback: (List<String>) -> Unit){
+            val api = APIClient.getInstance().create(APIService::class.java)
+            api.getDestinationStates().enqueue(object : Callback<List<String>> {
+                override fun onResponse(
+                    call: Call<List<String>>, response: Response<List<String>>
+                ) {
+                    Log.d("Tag","${response.body()!!}")
+                    callback(response.body()!!)
+
+                }
+
+                override fun onFailure(call: Call<List<String>>, t: Throwable) {
+                    Log.d("TAG", "$t")
+                    callback(emptyList())
+                }
+            })
+        }
+
         fun getHotels(callback: (List<Hotel>) -> Unit) {
             val api = APIClient.getInstance().create(APIService::class.java)
             api.getHotels().enqueue(object : Callback<List<Hotel>> {
