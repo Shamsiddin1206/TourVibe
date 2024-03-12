@@ -50,6 +50,7 @@ import coil.compose.rememberAsyncImagePainter
 import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
 import shamsiddin.project.tourvibe.R
+import shamsiddin.project.tourvibe.model.User
 import shamsiddin.project.tourvibe.navigation.ScreenType
 import shamsiddin.project.tourvibe.utils.Manager
 
@@ -212,8 +213,9 @@ fun Login(navController: NavHostController) {
             onClick = {
                 focusManager.clearFocus(true)
 
+                val user = User(name = username.text, password = password.text, email = username.text, country =null, id = 0, number = null, savedDestinations = null, image = null, savedFoods = null)
 
-                Manager.login(username.text, password.text) {
+                Manager.login(email = username.text, password = password.text) {
                     Log.d("TAG", "Login: $it")
                     if (it == "Success") {
                         Manager.giveToken(context, username.text)

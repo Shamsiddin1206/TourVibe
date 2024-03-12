@@ -1,6 +1,7 @@
 package shamsiddin.project.tourvibe.utils
 
 import retrofit2.Call
+import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
@@ -24,10 +25,12 @@ interface APIService {
     fun getRestaurants(): Call<List<Restaurant>>
     @GET("hotels")
     fun getHotels(): Call<List<Hotel>>
-    @POST("register/{email}/{password}/{name}/{country}")
-    fun register(@Path("email") email: String, @Path("password") password: String,@Path("name") name: String,@Path("country") country: String): Call<String>
-    @GET("login/{email}/{password}")
-    fun login(@Path("email") email: String, @Path("password") password: String): Call<String>
+
+    @GET("login/{username}/{password}")
+    fun login(@Path("username") username: String, @Path("password") password: String): Call<String>
+
+    @GET("register/{username}/{password}/{name}/{country}")
+    fun register(@Path("username") username: String,@Path("password") password: String,@Path("name") name: String,@Path("country") country: String): Call<String>
 
 
 }

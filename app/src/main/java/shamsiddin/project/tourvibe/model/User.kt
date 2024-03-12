@@ -5,7 +5,7 @@ data class User(
     var name: String,
     var email: String,
     var number: String?,
-    var country: String,
+    var country: String?,
     var savedDestinations: List<Destination>?,
     var image: String?,
     var savedFoods: List<Food>?,

@@ -1,6 +1,7 @@
 package shamsiddin.project.tourvibe.screen
 
 import android.os.Build
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,6 +20,7 @@ import shamsiddin.project.tourvibe.R
 import shamsiddin.project.tourvibe.navigation.ScreenType
 import shamsiddin.project.tourvibe.ui.theme.GreenPrimary
 import shamsiddin.project.tourvibe.utils.Manager
+var TAG = "TAG"
 
 @Composable
 
@@ -26,10 +28,11 @@ fun Splash(navController:NavController) {
 
     val context = LocalContext.current
     val user = Manager.getToken(context)
+    Log.d(TAG, "Splash: ${user}")
     LaunchedEffect(true) {
         delay(3250)
         if (user == "" ){
-            navController.navigate(ScreenType.Default.route)
+            navController.navigate(ScreenType.Registration.route)
         }
          else{   navController.navigate(ScreenType.Default.route)}
         }

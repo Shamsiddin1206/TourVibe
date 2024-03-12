@@ -2,9 +2,7 @@ package shamsiddin.project.tourvibe.navigation
 
 import android.util.Log
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
@@ -28,6 +26,7 @@ import shamsiddin.project.tourvibe.screen.menu.Menu
 @Composable
 fun SetNavGraph(navController: NavHostController){
     NavHost(navController = navController, startDestination = ScreenType.Splash.route){
+//        val model = MenuViewModel()
         composable(ScreenType.Splash.route){
             Splash(navController)
         }

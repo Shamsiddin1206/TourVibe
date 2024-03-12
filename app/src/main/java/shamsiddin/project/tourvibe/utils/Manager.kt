@@ -123,6 +123,7 @@ class Manager {
             val api = APIClient.getInstance().create(APIService::class.java)
             api.register(email,password,name,country).enqueue(object : Callback<String> {
                 override fun onResponse(call: Call<String>, response: Response<String>) {
+                    Log.d("TAG", "onResponse: ${response.body()}")
                     callback(response.body()!!)
                 }
 

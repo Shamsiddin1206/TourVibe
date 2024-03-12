@@ -34,17 +34,18 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.SubcomposeAsyncImage
 import shamsiddin.project.tourvibe.model.Food
 import shamsiddin.project.tourvibe.ui.theme.BACKGROUNDCARD
-import shamsiddin.project.tourvibe.ui.theme.GreenPrimary
 import shamsiddin.project.tourvibe.utils.Manager
 
 
@@ -53,21 +54,21 @@ var TAG = "TAG"
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Menu(navController: NavController) {
-    var search = ""
-    var foodlist by remember {
+    var search by remember { mutableStateOf(TextFieldValue("")) }
+    val focusRequester = remember { FocusRequester() }
+//    val user = viewModel.user.observeAsState().value
+    val user = Manager.getToken(LocalContext.current)
+
+    var foodList by remember {
         mutableStateOf(listOf<Food>())
     }
-    val focusRequester = remember { FocusRequester() }
 
     Manager.getFoods {
-        foodlist = it.toMutableList()
-        Log.d(TAG, "Menu: ${foodlist.joinToString()}")
+        foodList = it.toMutableList()
+        Log.d(TAG, "Menu: ${foodList.joinToString()}")
     }
 
-
     Column {
-
-
         Scaffold(
 
         )
@@ -94,7 +95,7 @@ fun Menu(navController: NavController) {
                     }
                     Column {
                         Text(
-                            text = "    Hello username",
+                            text = "    Hello ${user}",
                             color = Color.Gray,
                             modifier = Modifier.padding(start = 4.dp),
 
@@ -177,8 +178,8 @@ fun Menu(navController: NavController) {
                         .padding(start = 5.dp, end = 5.dp)
                 ) {
 
-                    items(foodlist) { foodItem ->
-                        FoodItem(foodItem,navController)
+                    items(foodList) { foodItem ->
+                        FoodItem(foodItem, navController)
 
                     }
                 }
