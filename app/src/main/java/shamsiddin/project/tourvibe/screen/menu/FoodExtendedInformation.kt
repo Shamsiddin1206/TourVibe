@@ -21,6 +21,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -30,26 +31,23 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.lerp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.SubcomposeAsyncImage
 import shamsiddin.project.tourvibe.model.Food
-import shamsiddin.project.tourvibe.utils.JsonNavType
+import shamsiddin.project.tourvibe.ui.theme.GreenPrimary
+import shamsiddin.project.tourvibe.ui.theme.TITLE
+import shamsiddin.project.tourvibe.ui.theme.TITLETEXT
 
 @Composable
 fun FoodExtendedInformation(navController: NavController, food: Food) {
@@ -103,8 +101,9 @@ fun CollapsingToolbar(destination: Food) {
     Box(modifier = Modifier.fillMaxSize()) {
         Header(mainImage, listOfImages, scroll)
         Body(destination.description, scroll)
+
         Toolbar(scroll, destination)
-//        Title(destination.name, scroll)
+
     }
 }
 
@@ -144,25 +143,47 @@ private fun Header(mainImage: String, listOfImages: List<String>, scrollState: S
 private fun Body(text: String, scrollState: ScrollState) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.verticalScroll(scrollState)
+        modifier = Modifier
+            .verticalScroll(scrollState)
+//            .background(TITLE)
     ) {
         Spacer(Modifier.height(270.dp))
         Card(
             modifier = Modifier.fillMaxSize(),
-            shape = RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp),
+            shape = RoundedCornerShape(topStart = 40.dp, topEnd = 40.dp),
             elevation = CardDefaults.cardElevation(5.dp)
         ) {
-            repeat(5) {
+            repeat(1) {
                 Text(
                     text = text,
                     style = MaterialTheme.typography.bodyMedium,
                     textAlign = TextAlign.Justify,
                     modifier = Modifier
-                        .background(Color.White)
+                        .background(TITLE)
                         .padding(16.dp)
                 )
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .background(TITLE)
+                ) {
+                    Divider(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp), thickness = 1.dp, color = GreenPrimary
+                    )
+
+                    Text(
+                        text = "Category",
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier
+                            .padding(16.dp), fontSize = 25.sp
+                    )
+                }
             }
         }
+
+
     }
 }
 
@@ -185,14 +206,14 @@ private fun Toolbar(scrollState: ScrollState, food: Food) {
         TopAppBar(
             modifier = Modifier
                 .background(
-                    color = Color.Cyan, shape = RoundedCornerShape(50.dp)
+                    color = TITLE
 //                brush = Brush.horizontalGradient(
 //                    listOf(Color(0xff026586), Color(0xff032C45))
 //                )
                 ),
             title = {
                 Row(modifier = Modifier.fillMaxWidth()) {
-                    Text(text = food.name)
+                    Text(text = food.name, color = TITLETEXT)
                 }
             },
             colors = TopAppBarDefaults.mediumTopAppBarColors(Color.Transparent)

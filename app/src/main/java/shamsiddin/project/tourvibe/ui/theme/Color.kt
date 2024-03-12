@@ -12,3 +12,6 @@ val Pink40 = Color(0xFF7D5260)
 
 val BACKGROUNDCARD = Color(0x80070809)
 val GreenPrimary = Color(0xFF2F7A83)
+
+val TITLE = Color(0xFFEEEEEE)
+val TITLETEXT = Color(0xFF31363F)

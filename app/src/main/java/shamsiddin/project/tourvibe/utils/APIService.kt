@@ -14,8 +14,6 @@ import shamsiddin.project.tourvibe.model.User
 interface APIService {
     @GET("foods")
     fun getFoods(): Call<List<Food>>
-
-
     @GET("destinations/")
     fun getDestinations(): Call<List<Destination>>
     @GET("destinations/states/")
@@ -32,5 +30,6 @@ interface APIService {
     @GET("register/{username}/{password}/{name}/{country}")
     fun register(@Path("username") username: String,@Path("password") password: String,@Path("name") name: String,@Path("country") country: String): Call<String>
 
+    fun getFoodCategory()
 
 }
