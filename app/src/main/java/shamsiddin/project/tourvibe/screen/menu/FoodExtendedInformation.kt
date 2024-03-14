@@ -1,20 +1,26 @@
 package shamsiddin.project.tourvibe.screen.menu
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -31,7 +37,10 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -39,6 +48,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -48,6 +58,7 @@ import shamsiddin.project.tourvibe.model.Food
 import shamsiddin.project.tourvibe.ui.theme.GreenPrimary
 import shamsiddin.project.tourvibe.ui.theme.TITLE
 import shamsiddin.project.tourvibe.ui.theme.TITLETEXT
+import shamsiddin.project.tourvibe.utils.Manager
 
 @Composable
 fun FoodExtendedInformation(navController: NavController, food: Food) {
@@ -100,7 +111,7 @@ fun CollapsingToolbar(destination: Food) {
 
     Box(modifier = Modifier.fillMaxSize()) {
         Header(mainImage, listOfImages, scroll)
-        Body(destination.description, scroll)
+        Body(destination, scroll)
 
         Toolbar(scroll, destination)
 
@@ -140,7 +151,16 @@ private fun Header(mainImage: String, listOfImages: List<String>, scrollState: S
 }
 
 @Composable
-private fun Body(text: String, scrollState: ScrollState) {
+private fun Body(food: Food, scrollState: ScrollState) {
+    var categoriesFood by remember {
+        mutableStateOf(listOf<String>())
+    }
+
+//    Manager.getFoodsAllCategory {
+//        categoriesFood = it
+//        Log.d(TAG, "Body: ${categoriesFood.joinToString()}")
+//    }
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -155,7 +175,7 @@ private fun Body(text: String, scrollState: ScrollState) {
         ) {
             repeat(1) {
                 Text(
-                    text = text,
+                    text = food.description,
                     style = MaterialTheme.typography.bodyMedium,
                     textAlign = TextAlign.Justify,
                     modifier = Modifier
@@ -163,7 +183,6 @@ private fun Body(text: String, scrollState: ScrollState) {
                         .padding(16.dp)
                 )
                 Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
                         .background(TITLE)
                 ) {
@@ -174,16 +193,62 @@ private fun Body(text: String, scrollState: ScrollState) {
                     )
 
                     Text(
-                        text = "Category",
+                        text = "Related images",
                         style = MaterialTheme.typography.bodyMedium,
                         modifier = Modifier
-                            .padding(16.dp), fontSize = 25.sp
+                            .padding(16.dp), fontSize = 25.sp, fontWeight = FontWeight.Bold
                     )
+
+
+                    LazyRow(
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(start = 5.dp, end = 5.dp)
+                    ) {
+                        items(food.images) {
+
+                            Card(modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(5.dp)
+                                .aspectRatio(0.8f)
+                                ,
+                                elevation = CardDefaults.cardElevation(5.dp),
+                                shape = RoundedCornerShape(5.dp)
+                            ) {
+                                Box(modifier = Modifier.fillMaxWidth()) {
+                                    SubcomposeAsyncImage(
+                                        model = it,
+                                        contentDescription = "",
+                                        loading = { CircularProgressIndicator() },
+                                        modifier = Modifier.fillMaxSize(),
+                                        contentScale = ContentScale.FillBounds
+                                    )
+                                    Box(modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(start = 15.dp, end = 15.dp, bottom = 15.dp)
+                                        .align(Alignment.BottomCenter)
+                                        .background(color = Color.Transparent),
+                                        contentAlignment = Alignment.BottomCenter
+                                    ){
+                                        Box(modifier = Modifier
+                                            .fillMaxWidth()
+                                            .background(
+                                                color = Color.White.copy(0.5f),
+                                                shape = RoundedCornerShape(10.dp)
+                                            )
+                                            .graphicsLayer { alpha = 0.8f }
+                                            .align(Alignment.BottomCenter)
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
+
+
         }
-
-
     }
 }
 

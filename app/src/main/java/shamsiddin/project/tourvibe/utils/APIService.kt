@@ -30,6 +30,10 @@ interface APIService {
     @GET("register/{username}/{password}/{name}/{country}")
     fun register(@Path("username") username: String,@Path("password") password: String,@Path("name") name: String,@Path("country") country: String): Call<String>
 
-    fun getFoodCategory()
+    @GET("foods/categories/")
+    fun getFoodsAllCategory(): Call<List<String>>
+
+    @GET("foods/{category}/")
+    fun getCategoryFoods(@Path("category") category: String): Call<List<String>>
 
 }

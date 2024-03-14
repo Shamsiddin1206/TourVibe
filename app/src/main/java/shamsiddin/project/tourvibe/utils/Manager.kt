@@ -147,5 +147,37 @@ class Manager {
                 }
             })
         }
+
+        fun getFoodsAllCategory(callback: (List<String>) -> Unit) {
+            val api = APIClient.getInstance().create(APIService::class.java)
+            api.getFoodsAllCategory().enqueue(object : Callback<List<String>> {
+                override fun onResponse(
+                    call: Call<List<String>>, response: Response<List<String>>
+                ) {
+                    callback(response.body()!!)
+                }
+
+                override fun onFailure(call: Call<List<String>>, t: Throwable) {
+                    callback(emptyList())
+                }
+            })
+        }
+
+
+        fun getCategoryFoods(category:String,callback: (List<String>) -> Unit) {
+            val api = APIClient.getInstance().create(APIService::class.java)
+            api.getCategoryFoods(category).enqueue(object : Callback<List<String>> {
+                override fun onResponse(
+                    call: Call<List<String>>, response: Response<List<String>>
+                ) {
+                    callback(response.body()!!)
+                }
+
+                override fun onFailure(call: Call<List<String>>, t: Throwable) {
+                    callback(emptyList())
+                }
+            })
+        }
+
     }
 }
