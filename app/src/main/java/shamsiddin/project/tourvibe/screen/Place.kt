@@ -377,15 +377,15 @@ fun Details(destination: Destination){
 
 @Composable
 fun Reviews(destination: Destination){
-    val list = destination.comments
+    var list by remember { mutableStateOf(destination.comments) }
     Box(modifier = Modifier
         .fillMaxWidth()) {
         if (!list.isNullOrEmpty()){
             LazyColumn(modifier = Modifier
                 .fillMaxWidth()
                 .height(1000.dp)){
-                items(list.size){
-                    ReviewItem(comment = list[it])
+                items(list!!.size){
+                    ReviewItem(comment = list!![it])
                 }
             }
         }else{
