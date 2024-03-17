@@ -202,7 +202,7 @@ private fun Body(destination: Destination, scrollState: ScrollState) {
                                 .padding(start = 15.dp, end = 15.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                                 Text(text = "${destination.locatedState}, ${destination.locatedCountry}", color = Color.Black, fontWeight = FontWeight.Bold, fontSize = 18.sp)
                                 Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Image(painter = painterResource(id = R.drawable.star), contentDescription = "", modifier = Modifier.size(25.dp))
+                                    Image(painter = painterResource(id = R.drawable.star), contentDescription = "", modifier = Modifier.size(20.dp))
                                     Spacer(modifier = Modifier.width(5.dp))
                                     Text(text = destination.rating.toString(), fontSize = 15.sp)
                                 }
@@ -409,7 +409,7 @@ fun ReviewItem(comment: Comment){
                 painter = painterResource(id = R.drawable.person_default_ic),
                 contentDescription = "",
                 modifier = Modifier
-                    .size(40.dp)
+                    .size(45.dp)
                     .clip(
                         RoundedCornerShape(50)
                     )
@@ -429,10 +429,8 @@ fun ReviewItem(comment: Comment){
             .padding(start = 5.dp, end = 5.dp), color = Color.Gray, fontSize = 14.sp)
 
         androidx.compose.material3.Divider(
-            modifier = Modifier
-
-                .padding(bottom = 16.dp, end = 16.dp, start = 16.dp),
-            thickness = 0.5.dp,
+            modifier = Modifier.padding(bottom = 5.dp, end = 10.dp, start = 10.dp, top = 10.dp),
+            thickness = 1.dp,
             color = GreenPrimary
         )
     }

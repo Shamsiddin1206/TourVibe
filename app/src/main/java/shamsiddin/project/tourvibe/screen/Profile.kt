@@ -60,6 +60,7 @@ import coil.compose.SubcomposeAsyncImage
 import shamsiddin.project.tourvibe.R
 import shamsiddin.project.tourvibe.navigation.ScreenType
 import shamsiddin.project.tourvibe.ui.theme.GreenPrimary
+import shamsiddin.project.tourvibe.ui.theme.ProfilePrimary
 import shamsiddin.project.tourvibe.utils.Manager
 import shamsiddin.project.tourvibe.utils.SharedPreferences
 
@@ -166,21 +167,21 @@ fun ProfileOutlinedEditText(string: String, type: String){
             readOnly = state,
             trailingIcon = {
                 if (state){
-                    IconButton(onClick = { state = false }, modifier = Modifier.size(30.dp)) {
-                        Icon(painter = painterResource(id = R.drawable.edit_ic), contentDescription = "", tint = GreenPrimary)
+                    IconButton(onClick = { state = false }, modifier = Modifier.size(25.dp)) {
+                        Icon(painter = painterResource(id = R.drawable.edit_ic), contentDescription = "", tint = ProfilePrimary)
                     }
                 }else{
                     IconButton(onClick = {
                         state = true
-                    }, modifier = Modifier.size(30.dp)) {
-                        Icon(painter = painterResource(id = R.drawable.confirm_ic), contentDescription = "", tint = GreenPrimary)
+                    }, modifier = Modifier.size(25.dp)) {
+                        Icon(painter = painterResource(id = R.drawable.confirm_ic), contentDescription = "", tint = ProfilePrimary)
                     }
                 }
             },
-            leadingIcon = { Icon(imageVector = mainIcon, contentDescription = "", tint = GreenPrimary)},
+            leadingIcon = { Icon(imageVector = mainIcon, contentDescription = "", tint = ProfilePrimary)},
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(10.dp),
-            textStyle = TextStyle(color = GreenPrimary, fontSize = 15.sp),
+            textStyle = TextStyle(color = ProfilePrimary, fontSize = 15.sp),
             colors = TextFieldDefaults.outlinedTextFieldColors(focusedBorderColor = GreenPrimary, unfocusedBorderColor = Color.Unspecified),
             singleLine = true
         )
