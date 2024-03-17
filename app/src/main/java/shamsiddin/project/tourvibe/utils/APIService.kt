@@ -12,16 +12,16 @@ import shamsiddin.project.tourvibe.model.Restaurant
 import shamsiddin.project.tourvibe.model.User
 
 interface APIService {
-    @GET("foods")
+    @GET("foods/")
     fun getFoods(): Call<List<Food>>
     @GET("destinations/")
     fun getDestinations(): Call<List<Destination>>
     @GET("destinations/states/")
     fun getDestinationStates(): Call<List<String>>
 
-    @GET("restaurants")
+    @GET("restaurants/")
     fun getRestaurants(): Call<List<Restaurant>>
-    @GET("hotels")
+    @GET("hotels/")
     fun getHotels(): Call<List<Hotel>>
 
     @GET("login/{username}/{password}")
@@ -33,7 +33,10 @@ interface APIService {
     @GET("foods/categories/")
     fun getFoodsAllCategory(): Call<List<String>>
 
-    @GET("foods/{category}/")
-    fun getCategoryFoods(@Path("category") category: String): Call<List<String>>
+    @GET("foods/{category}")
+    fun getCategoryFoods(@Path("category") category: String): Call<List<Food>>
+
+    @POST("comment/{address}/{address_id}/{username}/{rating}")
+    fun giveComment(@Path("address") address: String,@Path("address_id") address_id: Int,@Path("username") username: String,@Path("rating") rating: Double,@Body text:String):Call<String>
 
 }

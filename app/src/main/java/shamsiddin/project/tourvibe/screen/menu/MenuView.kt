@@ -5,14 +5,23 @@ package shamsiddin.project.tourvibe.screen.menu
 
 import android.annotation.SuppressLint
 import android.util.Log
+import android.view.View
+import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -20,20 +29,25 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -44,28 +58,32 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.SubcomposeAsyncImage
+import shamsiddin.project.tourvibe.model.Destination
 import shamsiddin.project.tourvibe.model.Food
 import shamsiddin.project.tourvibe.ui.theme.BACKGROUNDCARD
 import shamsiddin.project.tourvibe.utils.Manager
 
 
 var TAG = "TAG"
+
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Menu(navController: NavController) {
-    var search by remember { mutableStateOf(TextFieldValue("")) }
+    var search by remember { mutableStateOf("") }
+    var state by remember { mutableStateOf(false) }
+    val context = LocalContext.current
     val focusRequester = remember { FocusRequester() }
 //    val user = viewModel.user.observeAsState().value
-    val user = Manager.getToken(LocalContext.current)
+    val user = Manager.getToken(context)
 
     var foodList by remember {
         mutableStateOf(listOf<Food>())
     }
 
     Manager.getFoods {
-        foodList = it.toMutableList()
-        Log.d(TAG, "Menu: ${foodList.joinToString()}")
+        foodList = it
+        Log.d(TAG, "Foodlist: ${foodList}")
     }
 
     Column {
@@ -76,8 +94,7 @@ fun Menu(navController: NavController) {
         {
             Spacer(modifier = Modifier.height(32.dp))
             Column(
-                modifier = Modifier
-                    .padding(horizontal = 16.dp, vertical = 24.dp)
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 24.dp)
             ) {
 
                 Row(
@@ -122,63 +139,170 @@ fun Menu(navController: NavController) {
 
                     IconButton(onClick = { /* Handle settings click */ }) {
                         Icon(
-                            painter = painterResource(id =shamsiddin.project.tourvibe.R.drawable.settings ),
+                            painter = painterResource(id = shamsiddin.project.tourvibe.R.drawable.settings),
                             modifier = Modifier.size(32.dp),
                             contentDescription = "Settings"
                         )
                     }
                 }
 
+                var categories by remember {
+                    mutableStateOf(listOf<String>())
+                }
+
+                var categoriesFood by remember {
+                    mutableStateOf(listOf<Food>())
+                }
+
+                Manager.getFoodsAllCategory {
+                    categories = it
+                }
 
 
+                val category = remember { mutableStateOf("") }
+
+                categoriesFood = foodList
 
 
+//////categorylarni foodlari 1ta category tanlasa osha foodlar chiqadi
 
-
-                Spacer(modifier = Modifier.height(16.dp))
-                // Search Bar and Filter Icon
-
-                TextField(
-                    value = search,
-                    modifier = Modifier
+                Spacer(modifier = Modifier.padding(16.dp))
+                LazyRow(
+                    Modifier
                         .fillMaxWidth()
-                        .focusRequester(focusRequester = focusRequester),
-                    onValueChange = {
-                        search = it
-                    },
-                    singleLine = true,
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                    shape = RoundedCornerShape(16.dp),
-                    placeholder = {
-                        Text(text = "Search", fontSize = 14.sp)
-                    },
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Filled.Search,
-                            contentDescription = "",
-                            tint = Color.Black
-                        )
-                    },
-                    colors = TextFieldDefaults.textFieldColors(
-//                textColor = Text2,
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-//                cursorColor = Text2,
-//                containerColor = Secondary
-                    ),
-                    textStyle = TextStyle(fontSize = 16.sp),
-                )
+                        .padding(start = 10.dp)
+                ) {
+                    items(categories.size + 1) {
+                        val cnt_category = if (it == 0) "All" else categories[it - 1]
+                        Card(
+                            modifier = Modifier
+                                .height(40.dp)
+                                .padding(end = 10.dp)
+                                .clickable {
+                                    category.value = cnt_category
+                                    Log.d(TAG, "Menu: ${category.value}")
+                                    if (category.value == "All") {
+                                        categoriesFood = foodList
+                                    } else {
+                                        Manager.getCategoryFoods(category.value) {
+                                            categoriesFood = it
+                                        }
+
+                                    }
+                                },
+                            elevation = CardDefaults.cardElevation(5.dp),
+                            shape = RoundedCornerShape(5.dp),
+                            colors = CardDefaults.cardColors(Color.White)
+                        ) {
+                            Row(
+                                modifier = Modifier.fillMaxHeight(),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                Text(
+                                    text = cnt_category,
+                                    color = if (category.value != cnt_category) Color.Black else Color(
+                                        android.graphics.Color.parseColor(
+                                            "#A5DD9B"
+                                        )
+                                    ),
+                                    fontSize = 15.sp,
+                                    modifier = Modifier.padding(start = 5.dp, end = 5.dp)
+                                )
+                            }
+                        }
+                    }
+                }
 
 
-                Spacer(modifier = Modifier.height(8.dp))
-                // Lazy Column Content
+
+                Spacer(modifier = Modifier.padding(16.dp))
+                var foodSearchList by remember { mutableStateOf(mutableListOf<Food>()) }
+                val selected = remember { mutableIntStateOf(0) }
+
+
+/////search bar foodlarni name boyicha filter qilish
+                Scaffold(
+                ) {
+                    SearchBar(
+                        query = search,
+                        onQueryChange = { search = it },
+                        onSearch = {
+                            state = false
+                        },
+                        active = state,
+                        onActiveChange = { state = it },
+                        placeholder = {
+                            Text(text = "Search by food name")
+                        },
+                        leadingIcon = {
+                            Icon(imageVector = Icons.Filled.Search, contentDescription = "")
+                        },
+                        trailingIcon = {
+                            if (state) {
+                                Icon(
+                                    imageVector = Icons.Default.Clear,
+                                    contentDescription = "",
+                                    modifier = Modifier.clickable {
+                                        if (search.isNotEmpty()) {
+                                            search = ""
+                                        } else {
+                                            state = false
+                                        }
+//                                        foodSearchList.clear()
+                                    })
+                            }
+                        },
+                    ) {
+                        LazyColumn(
+                        ) {
+                            if (state) {
+                                if (search.isNotEmpty()) {
+                                    foodSearchList.clear()
+                                    categoriesFood.forEach {
+                                        if (it.name.trim().toLowerCase()
+                                                .contains(search.trim().toLowerCase())
+                                        ) {
+                                            Log.d("NIMADIR CHIQISHI KERAK", "JAVOB BERAMAN ")
+                                            foodSearchList.add(it)
+                                        }
+                                    }
+                                    if (foodSearchList.isNotEmpty()) {
+                                        items(foodSearchList) { food ->
+                                            FoodItem(
+                                                food = food,
+                                                navController = navController
+                                            )
+                                        }
+                                    } else {
+                                        Toast.makeText(context, "not found", Toast.LENGTH_SHORT)
+                                            .show()
+
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    if (!state) {
+                        LazyColumn(
+                            modifier = Modifier.padding(top = 70.dp)
+                        ) {
+                            items(categoriesFood) {
+                                FoodItem(it, navController = navController)
+                            }
+                        }
+                    }
+                }
+
+
+////foodlar massivini chiqaramiz
                 LazyColumn(
                     Modifier
                         .fillMaxHeight()
                         .padding(start = 5.dp, end = 5.dp)
                 ) {
 
-                    items(foodList) { foodItem ->
+                    items(categoriesFood) { foodItem ->
                         FoodItem(foodItem, navController)
 
                     }
@@ -189,8 +313,11 @@ fun Menu(navController: NavController) {
 }
 
 
+
+
+
 @Composable
-fun FoodItem(food: Food,navController:NavController) {
+fun FoodItem(food: Food, navController: NavController) {
     Spacer(modifier = Modifier.height(8.dp))
     Card(
         modifier = Modifier
@@ -199,20 +326,16 @@ fun FoodItem(food: Food,navController:NavController) {
             .aspectRatio(1.8f)
             .clickable {
                 navController.navigate("food_extended_screen" + "/${food}")
-            },
-        shape = RoundedCornerShape(30.dp),
+            }, shape = RoundedCornerShape(30.dp),
 
         elevation = CardDefaults.cardElevation(5.dp) // CardDefaults.cardElevation is deprecated, you can directly use dp values
     ) {
         Box(modifier = Modifier.fillMaxHeight()) {
-            SubcomposeAsyncImage(
-                model = food.mainImage,
+            SubcomposeAsyncImage(model = food.mainImage,
                 contentDescription = "",
-                modifier = Modifier
-                    .fillMaxHeight(),
+                modifier = Modifier.fillMaxHeight(),
                 contentScale = ContentScale.Crop,
-                loading = { CircularProgressIndicator() }
-            )
+                loading = { CircularProgressIndicator() })
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -221,8 +344,10 @@ fun FoodItem(food: Food,navController:NavController) {
                 colors = CardDefaults.cardColors(BACKGROUNDCARD),
                 elevation = CardDefaults.cardElevation(5.dp)// Same as above
             ) {
-                Row(modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
 
 
                     Column {
@@ -247,55 +372,10 @@ fun FoodItem(food: Food,navController:NavController) {
                         text = food.name,
                         modifier = Modifier.padding(end = 20.dp),
                         fontWeight = FontWeight.Bold,
-                        fontSize = 17.sp)
+                        fontSize = 17.sp
+                    )
                 }
             }
         }
     }
 }
-
-
-//@Composable
-//fun Menu(navController: NavController) {
-//    Column(
-//        modifier = Modifier
-//            .fillMaxSize()
-//            .background(Color.White)
-//            .verticalScroll(
-//                rememberScrollState()
-//            ),
-//        horizontalAlignment = Alignment.CenterHorizontally
-//    ) {
-//        Row(
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .padding(10.dp), verticalAlignment = Alignment.CenterVertically
-//        ) {
-//            Image(
-//                painter = painterResource(id = R.drawable.person_default_ic),
-//                contentDescription = "",
-//                modifier = Modifier
-//                    .size(70.dp).padding(10.dp)
-//                    .clip(
-//                        RoundedCornerShape(50)
-//                    )
-//            )
-//            Spacer(modifier = Modifier.width(10.dp))
-//            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-//
-//                Text(text = "Hello"+" name", fontSize = 15.sp)
-//            }
-//
-//            Image(
-//                painter = painterResource(id = R.drawable.settings
-//                ),
-//                contentDescription = "",
-//                modifier = Modifier
-//                    .size(50.dp).padding(10.dp)
-//                    .clip(
-//                        RoundedCornerShape(50)
-//                    )
-//            )
-//        }
-//    }
-//}

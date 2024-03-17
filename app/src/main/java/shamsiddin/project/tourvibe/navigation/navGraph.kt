@@ -11,6 +11,8 @@ import shamsiddin.project.tourvibe.model.Destination
 import shamsiddin.project.tourvibe.model.DestinationArgType
 import shamsiddin.project.tourvibe.model.Food
 import shamsiddin.project.tourvibe.model.FoodArgType
+import shamsiddin.project.tourvibe.model.Restaurant
+import shamsiddin.project.tourvibe.model.RestaurantArgType
 import shamsiddin.project.tourvibe.screen.Countries
 import shamsiddin.project.tourvibe.screen.Default
 import shamsiddin.project.tourvibe.screen.GuideBook
@@ -22,6 +24,7 @@ import shamsiddin.project.tourvibe.screen.Registration
 import shamsiddin.project.tourvibe.screen.Splash
 import shamsiddin.project.tourvibe.screen.menu.FoodExtendedInformation
 import shamsiddin.project.tourvibe.screen.menu.Menu
+import shamsiddin.project.tourvibe.screen.menu.RestaurantScreen
 
 @Composable
 fun SetNavGraph(navController: NavHostController){
@@ -45,11 +48,19 @@ fun SetNavGraph(navController: NavHostController){
         composable(ScreenType.Menu.route){
             Menu(navController)
         }
+
         composable(ScreenType.Profile.route){
             Profile(navController)
         }
         composable(ScreenType.Countries.route){
             Countries(navController)
+        }
+        composable(ScreenType.Restaurant.route, arguments = listOf(navArgument("restaurant"){
+            type = RestaurantArgType()
+        })){
+            val res = it.arguments?.getString("restaurant")?.let { it1 -> Gson().fromJson(it1, Restaurant::class.java) }
+            Log.d("navGraph Destination", "SetNavGraph: ${res!!.name}")
+            RestaurantScreen(navController = navController, restaurant = res)
         }
         composable(ScreenType.PLace.route, arguments = listOf(navArgument("destination"){
             type = DestinationArgType()

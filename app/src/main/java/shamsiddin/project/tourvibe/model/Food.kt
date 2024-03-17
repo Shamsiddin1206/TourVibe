@@ -12,18 +12,16 @@ data class Food(
     var description: String,
     var rating: Double,
     var comments: List<Comment>?,
-    var rec_places: List<String>?,
     var locatedState: String,
     var locatedCountry: String,
-    var caloryInfo: String,
-    var price: String
-){
-    override fun toString(): String = Uri.encode(Gson().toJson(this))
+    var restaurant: List<Restaurant>
+    ){
+        override fun toString(): String = Uri.encode(Gson().toJson(this))
 
-}
+    }
 
-class FoodArgType : JsonNavType<Food>(){
-    override fun fromJsonParse(value: String): Food = Gson().fromJson(value, Food::class.java)
+    class FoodArgType : JsonNavType<Food>(){
+        override fun fromJsonParse(value: String): Food = Gson().fromJson(value, Food::class.java)
 
-    override fun Food.getJsonParse(): String = Gson().toJson(this)
-}
+        override fun Food.getJsonParse(): String = Gson().toJson(this)
+    }

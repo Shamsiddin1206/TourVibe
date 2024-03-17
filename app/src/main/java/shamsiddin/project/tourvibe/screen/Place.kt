@@ -1,6 +1,7 @@
 package shamsiddin.project.tourvibe.screen
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -314,7 +315,11 @@ private fun Body(destination: Destination, scrollState: ScrollState) {
                                     ExtendedFloatingActionButton(
                                         text = { Text(text = "Confirm") },
                                         icon = { Icon(imageVector = Icons.Filled.DoneOutline, contentDescription = "") },
-                                        onClick = { sheetState = false },
+                                        onClick = {
+                                            Manager.giveComment("destination",destination.id,currentUser,myRating.toDouble(),commentText){
+                                                Log.d("COMMENT", "Body: ${it}")
+                                            }
+                                            sheetState = false },
                                         containerColor = Color(android.graphics.Color.parseColor("#49be25")),
                                         contentColor = Color.White,
                                         modifier = Modifier

@@ -39,7 +39,7 @@ class Manager {
                 override fun onResponse(
                     call: Call<List<Restaurant>>, response: Response<List<Restaurant>>
                 ) {
-                    Log.d("Tag","${response.body()!!}")
+                    Log.d("Tag", "${response.body()!!}")
                     callback(response.body()!!)
 
                 }
@@ -57,7 +57,7 @@ class Manager {
                 override fun onResponse(
                     call: Call<List<Destination>>, response: Response<List<Destination>>
                 ) {
-                    Log.d("Tag","${response.body()!!}")
+                    Log.d("Tag", "${response.body()!!}")
                     callback(response.body()!!)
 
                 }
@@ -69,13 +69,13 @@ class Manager {
             })
         }
 
-        fun getDestinationStates(callback: (List<String>) -> Unit){
+        fun getDestinationStates(callback: (List<String>) -> Unit) {
             val api = APIClient.getInstance().create(APIService::class.java)
             api.getDestinationStates().enqueue(object : Callback<List<String>> {
                 override fun onResponse(
                     call: Call<List<String>>, response: Response<List<String>>
                 ) {
-                    Log.d("Tag","${response.body()!!}")
+                    Log.d("Tag", "${response.body()!!}")
                     callback(response.body()!!)
 
                 }
@@ -93,7 +93,7 @@ class Manager {
                 override fun onResponse(
                     call: Call<List<Hotel>>, response: Response<List<Hotel>>
                 ) {
-                    Log.d("Tag","${response.body()!!}")
+                    Log.d("Tag", "${response.body()!!}")
                     callback(response.body()!!)
 
                 }
@@ -119,9 +119,15 @@ class Manager {
             return sharedPreferences.getString("user", "") ?: ""
         }
 
-        fun register(email: String,password: String,name:String,country:String, callback: (String) -> Unit) {
+        fun register(
+            email: String,
+            password: String,
+            name: String,
+            country: String,
+            callback: (String) -> Unit
+        ) {
             val api = APIClient.getInstance().create(APIService::class.java)
-            api.register(email,password,name,country).enqueue(object : Callback<String> {
+            api.register(email, password, name, country).enqueue(object : Callback<String> {
                 override fun onResponse(call: Call<String>, response: Response<String>) {
                     Log.d("TAG", "onResponse: ${response.body()}")
                     callback(response.body()!!)
@@ -134,9 +140,9 @@ class Manager {
             })
         }
 
-        fun login(email: String,password: String, callback: (String) -> Unit) {
+        fun login(email: String, password: String, callback: (String) -> Unit) {
             val api = APIClient.getInstance().create(APIService::class.java)
-            api.login(email,password).enqueue(object : Callback<String> {
+            api.login(email, password).enqueue(object : Callback<String> {
                 override fun onResponse(call: Call<String>, response: Response<String>) {
                     callback(response.body()!!)
                 }
@@ -164,20 +170,59 @@ class Manager {
         }
 
 
-        fun getCategoryFoods(category:String,callback: (List<String>) -> Unit) {
+        fun getCategoryFoods(category: String, callback: (List<Food>) -> Unit) {
             val api = APIClient.getInstance().create(APIService::class.java)
-            api.getCategoryFoods(category).enqueue(object : Callback<List<String>> {
+            api.getCategoryFoods(category).enqueue(object : Callback<List<Food>> {
                 override fun onResponse(
-                    call: Call<List<String>>, response: Response<List<String>>
+                    call: Call<List<Food>>, response: Response<List<Food>>
                 ) {
+                    Log.d("Abdulbosit", "onResponse:${response.body()} ")
                     callback(response.body()!!)
                 }
 
-                override fun onFailure(call: Call<List<String>>, t: Throwable) {
+                override fun onFailure(call: Call<List<Food>>, t: Throwable) {
                     callback(emptyList())
                 }
             })
         }
 
+        fun postComment(
+            address: String,
+            address_id: Int,
+            username: String,
+            rating: Double,
+            text: String,
+            callback: (String) -> Unit
+        ) {
+            val api = APIClient.getInstance().create(APIService::class.java)
+            api.giveComment(address, address_id, username, rating, text).enqueue(object : Callback<String> {
+                override fun onResponse(call: Call<String>, response: Response<String>) {
+                    callback(response.body()!!)
+                }
+
+                override fun onFailure(call: Call<String>, t: Throwable) {
+                    callback("")
+                }
+            })
+        }
+        fun giveComment(
+            address: String,
+            address_id: Int,
+            username: String,
+            rating: Double,
+            text: String,
+            callback: (String) -> Unit
+        ) {
+            val api = APIClient.getInstance().create(APIService::class.java)
+            api.giveComment(address, address_id, username, rating, text).enqueue(object : Callback<String> {
+                override fun onResponse(call: Call<String>, response: Response<String>) {
+                    callback(response.body()!!)
+                }
+
+                override fun onFailure(call: Call<String>, t: Throwable) {
+                    callback("")
+                }
+            })
+        }
     }
 }

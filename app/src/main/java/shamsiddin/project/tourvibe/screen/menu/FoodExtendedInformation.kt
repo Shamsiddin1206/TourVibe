@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -54,7 +55,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.SubcomposeAsyncImage
+import shamsiddin.project.tourvibe.model.Destination
 import shamsiddin.project.tourvibe.model.Food
+import shamsiddin.project.tourvibe.model.Restaurant
+import shamsiddin.project.tourvibe.navigation.ScreenType
 import shamsiddin.project.tourvibe.ui.theme.GreenPrimary
 import shamsiddin.project.tourvibe.ui.theme.TITLE
 import shamsiddin.project.tourvibe.ui.theme.TITLETEXT
@@ -63,7 +67,7 @@ import shamsiddin.project.tourvibe.utils.Manager
 @Composable
 fun FoodExtendedInformation(navController: NavController, food: Food) {
 
-    Place(navController = navController, destination = food)
+    Place(navController = navController, food = food)
 //    Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Top) {
 //
 //
@@ -95,25 +99,25 @@ fun FoodExtendedInformation(navController: NavController, food: Food) {
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun Place(navController: NavController, destination: Food?) {
+fun Place(food: Food?,navController: NavController) {
 //    val pagerState = rememberPagerState(pageCount = {listOfImages.size})
 
     Scaffold {
-        CollapsingToolbar(destination = destination!!)
+        CollapsingToolbar(food = food!!,navController)
     }
 }
 
 @Composable
-fun CollapsingToolbar(destination: Food) {
-    val listOfImages = destination.images
-    val mainImage = destination.mainImage
+fun CollapsingToolbar(food: Food,navController: NavController) {
+    val listOfImages = food.images
+    val mainImage = food.mainImage
     val scroll: ScrollState = rememberScrollState(0)
 
     Box(modifier = Modifier.fillMaxSize()) {
         Header(mainImage, listOfImages, scroll)
-        Body(destination, scroll)
+        Body(food, scroll, navController)
 
-        Toolbar(scroll, destination)
+        Toolbar(scroll, food)
 
     }
 }
@@ -151,15 +155,20 @@ private fun Header(mainImage: String, listOfImages: List<String>, scrollState: S
 }
 
 @Composable
-private fun Body(food: Food, scrollState: ScrollState) {
-    var categoriesFood by remember {
-        mutableStateOf(listOf<String>())
-    }
+private fun Body(food: Food, scrollState: ScrollState,navController: NavController) {
 
 //    Manager.getFoodsAllCategory {
 //        categoriesFood = it
 //        Log.d(TAG, "Body: ${categoriesFood.joinToString()}")
 //    }
+
+    var restaurantList by remember {
+        mutableStateOf(listOf<Restaurant>())
+    }
+
+    Manager.getRestaurants {
+        restaurantList = it.toMutableList()
+    }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -207,11 +216,11 @@ private fun Body(food: Food, scrollState: ScrollState) {
                     ) {
                         items(food.images) {
 
-                            Card(modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(5.dp)
-                                .aspectRatio(0.8f)
-                                ,
+                            Card(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(5.dp)
+                                    .aspectRatio(0.8f),
                                 elevation = CardDefaults.cardElevation(5.dp),
                                 shape = RoundedCornerShape(5.dp)
                             ) {
@@ -220,34 +229,85 @@ private fun Body(food: Food, scrollState: ScrollState) {
                                         model = it,
                                         contentDescription = "",
                                         loading = { CircularProgressIndicator() },
-                                        modifier = Modifier.fillMaxSize(),
-                                        contentScale = ContentScale.FillBounds
+                                        modifier = Modifier.fillMaxSize().size(200.dp),
+                                        contentScale = ContentScale.Crop
                                     )
-                                    Box(modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(start = 15.dp, end = 15.dp, bottom = 15.dp)
-                                        .align(Alignment.BottomCenter)
-                                        .background(color = Color.Transparent),
-                                        contentAlignment = Alignment.BottomCenter
-                                    ){
-                                        Box(modifier = Modifier
-                                            .fillMaxWidth()
-                                            .background(
-                                                color = Color.White.copy(0.5f),
-                                                shape = RoundedCornerShape(10.dp)
-                                            )
-                                            .graphicsLayer { alpha = 0.8f }
-                                            .align(Alignment.BottomCenter)
-                                        )
-                                    }
                                 }
                             }
                         }
                     }
+
+                    Text(
+                        text = "Restaurants you may like",
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier
+                            .padding(16.dp), fontSize = 25.sp, fontWeight = FontWeight.Bold
+                    )
+
+                    LazyRow(
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(start = 16.dp, end = 16.dp)
+                    ) {
+                        items(restaurantList){
+                            RestaurantItem(restaurant = it, navController = navController )
+                        }
+                    }
+
                 }
             }
 
 
+        }
+    }
+}
+
+
+@Composable
+fun RestaurantItem(restaurant: Restaurant,navController: NavController){
+    Card(modifier = Modifier.clickable {
+        navController.navigate("restaurant_screen" + "/${restaurant}")
+    }
+        .fillMaxWidth()
+        .padding(5.dp)
+        .aspectRatio(0.8f),
+        elevation = CardDefaults.cardElevation(5.dp),
+        shape = RoundedCornerShape(5.dp)
+    ) {
+        Box(modifier = Modifier.fillMaxWidth()) {
+            SubcomposeAsyncImage(
+                model = restaurant.mainImage,
+                contentDescription = "",
+                loading = { CircularProgressIndicator() },
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.FillBounds
+            )
+            Box(modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 15.dp, end = 15.dp, bottom = 15.dp)
+                .align(Alignment.BottomCenter)
+                .background(color = Color.Transparent),
+                contentAlignment = Alignment.BottomCenter
+            ){
+                Box(modifier = Modifier
+                    .fillMaxWidth()
+                    .background(
+                        color = Color.White.copy(0.5f),
+                        shape = RoundedCornerShape(10.dp)
+                    )
+                    .graphicsLayer { alpha = 0.8f }
+                    .align(Alignment.BottomCenter),
+                    contentAlignment = Alignment.BottomCenter
+                ) {
+                    Column(modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight()) {
+                        Text(text = restaurant.name, color = Color.White, fontSize = 18.sp,fontWeight = FontWeight.Bold, modifier = Modifier
+                            .padding(10.dp)
+                            .fillMaxWidth())
+                    }
+                }
+            }
         }
     }
 }

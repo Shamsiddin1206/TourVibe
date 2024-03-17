@@ -11,5 +11,6 @@ sealed class ScreenType(val route: String){
     object Profile: ScreenType("profile_screen")
     object Countries: ScreenType("countries_screen")
     object PLace: ScreenType("place_screen"+"/{destination}")
+    object Restaurant: ScreenType("restaurant_screen"+"/{restaurant}")
     object FoodExtendedInformation: ScreenType("food_extended_screen"+"/{food}")
 }
