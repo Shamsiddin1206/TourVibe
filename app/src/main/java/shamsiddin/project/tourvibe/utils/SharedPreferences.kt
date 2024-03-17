@@ -20,6 +20,16 @@ class SharedPreferences private constructor(context: Context){
         }
     }
 
+    fun setUser(user: User){
+        edit.putString("User", gson.toJson(user))
+    }
+    fun getUser(): User?{
+        val data = shared.getString("User", "")
+        if (data == "") return null
+        val typeToken = object : TypeToken<User>() {}.type
+        return gson.fromJson(data, typeToken)
+    }
+
     fun setCountry(country: String){
         edit.putString("Country", country).apply()
     }
