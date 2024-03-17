@@ -15,7 +15,7 @@ val GreenPrimary = Color(0xFF2F7A83)
 
 val TITLE = Color(0xFFEEEEEE)
 val TITLETEXT = Color(0xFF31363F)
-
+val profile_primary = Color(0xFF001357)
 
 
 val MidnightBlue = Color(0xFF1B202D)
