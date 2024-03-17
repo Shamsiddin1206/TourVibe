@@ -29,6 +29,7 @@ import shamsiddin.project.tourvibe.screen.menu.RestaurantScreen
 @Composable
 fun SetNavGraph(navController: NavHostController){
     NavHost(navController = navController, startDestination = ScreenType.Splash.route){
+        var foodName = ""
 //        val model = MenuViewModel()
         composable(ScreenType.Splash.route){
             Splash(navController)
@@ -58,9 +59,10 @@ fun SetNavGraph(navController: NavHostController){
         composable(ScreenType.Restaurant.route, arguments = listOf(navArgument("restaurant"){
             type = RestaurantArgType()
         })){
+
             val res = it.arguments?.getString("restaurant")?.let { it1 -> Gson().fromJson(it1, Restaurant::class.java) }
             Log.d("navGraph Destination", "SetNavGraph: ${res!!.name}")
-            RestaurantScreen(navController = navController, restaurant = res)
+            RestaurantScreen(navController = navController, restaurant = res,food_name = foodName)
         }
         composable(ScreenType.PLace.route, arguments = listOf(navArgument("destination"){
             type = DestinationArgType()
@@ -78,6 +80,7 @@ fun SetNavGraph(navController: NavHostController){
         })){
             val food =it.arguments?.getString("food")?.let { it1 -> Gson().fromJson(it1, Food::class.java) }
             FoodExtendedInformation(navController = navController, food = food!!)
+            foodName = food.name
             Log.d("shmas aqlli", "SetNavGraph: ${food!!.name}")
         }
     }

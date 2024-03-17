@@ -186,25 +186,6 @@ class Manager {
             })
         }
 
-        fun postComment(
-            address: String,
-            address_id: Int,
-            username: String,
-            rating: Double,
-            text: String,
-            callback: (String) -> Unit
-        ) {
-            val api = APIClient.getInstance().create(APIService::class.java)
-            api.giveComment(address, address_id, username, rating, text).enqueue(object : Callback<String> {
-                override fun onResponse(call: Call<String>, response: Response<String>) {
-                    callback(response.body()!!)
-                }
-
-                override fun onFailure(call: Call<String>, t: Throwable) {
-                    callback("")
-                }
-            })
-        }
         fun giveComment(
             address: String,
             address_id: Int,

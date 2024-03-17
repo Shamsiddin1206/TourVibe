@@ -60,7 +60,6 @@ import coil.compose.SubcomposeAsyncImage
 import shamsiddin.project.tourvibe.R
 import shamsiddin.project.tourvibe.navigation.ScreenType
 import shamsiddin.project.tourvibe.ui.theme.GreenPrimary
-import shamsiddin.project.tourvibe.ui.theme.profile_primary
 import shamsiddin.project.tourvibe.utils.Manager
 import shamsiddin.project.tourvibe.utils.SharedPreferences
 
@@ -78,7 +77,7 @@ fun Profile(navController: NavController){
             .wrapContentHeight()
             .padding(start = 15.dp, end = 15.dp)
             .align(Alignment.Center), horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(text = "Profile", fontSize = 25.sp, fontWeight = FontWeight.Bold, color = profile_primary)
+            Text(text = "Profile", fontSize = 25.sp, fontWeight = FontWeight.Bold, color = GreenPrimary)
             Spacer(modifier = Modifier.height(30.dp))
             Box(modifier = Modifier.size(130.dp)) {
                 Card(modifier = Modifier.fillMaxSize(), shape = RoundedCornerShape(50), border = BorderStroke(2.dp, GreenPrimary)) {
@@ -102,7 +101,7 @@ fun Profile(navController: NavController){
                 }
             }
             Spacer(modifier = Modifier.height(10.dp))
-            Text(text = "Shamsiddin Tohirov", fontWeight = FontWeight.Bold, color = profile_primary, fontSize = 25.sp)
+            Text(text = "Shamsiddin Tohirov", fontWeight = FontWeight.Bold, color = GreenPrimary, fontSize = 25.sp)
             Spacer(modifier = Modifier.height(15.dp))
             ProfileOutlinedEditText(string = "Shamsiddin Tohirov", type = "name")
             Spacer(modifier = Modifier.height(10.dp))
@@ -112,6 +111,10 @@ fun Profile(navController: NavController){
             Spacer(modifier = Modifier.height(10.dp))
             ProfileOutlinedEditText(string = "Uzbekistan", type = "country")
             Spacer(modifier = Modifier.height(10.dp))
+
+            Button(onClick = { navController.navigate(ScreenType.Login.route)}) {
+                Text(text = "Log out")
+            }
 //            Card(modifier = Modifier
 //                .fillMaxWidth()
 //                .padding(start = 10.dp, end = 10.dp), shape = RoundedCornerShape(10.dp), elevation = CardDefaults.cardElevation(5.dp), colors = CardDefaults.cardColors(
@@ -164,20 +167,20 @@ fun ProfileOutlinedEditText(string: String, type: String){
             trailingIcon = {
                 if (state){
                     IconButton(onClick = { state = false }, modifier = Modifier.size(30.dp)) {
-                        Icon(painter = painterResource(id = R.drawable.edit_ic), contentDescription = "", tint = profile_primary)
+                        Icon(painter = painterResource(id = R.drawable.edit_ic), contentDescription = "", tint = GreenPrimary)
                     }
                 }else{
                     IconButton(onClick = {
                         state = true
                     }, modifier = Modifier.size(30.dp)) {
-                        Icon(painter = painterResource(id = R.drawable.confirm_ic), contentDescription = "", tint = profile_primary)
+                        Icon(painter = painterResource(id = R.drawable.confirm_ic), contentDescription = "", tint = GreenPrimary)
                     }
                 }
             },
-            leadingIcon = { Icon(imageVector = mainIcon, contentDescription = "", tint = profile_primary)},
+            leadingIcon = { Icon(imageVector = mainIcon, contentDescription = "", tint = GreenPrimary)},
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(10.dp),
-            textStyle = TextStyle(color = profile_primary, fontSize = 15.sp),
+            textStyle = TextStyle(color = GreenPrimary, fontSize = 15.sp),
             colors = TextFieldDefaults.outlinedTextFieldColors(focusedBorderColor = GreenPrimary, unfocusedBorderColor = Color.Unspecified),
             singleLine = true
         )
