@@ -31,6 +31,7 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Divider
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
@@ -88,6 +89,7 @@ import kotlinx.coroutines.launch
 import shamsiddin.project.tourvibe.R
 import shamsiddin.project.tourvibe.model.Comment
 import shamsiddin.project.tourvibe.model.Destination
+import shamsiddin.project.tourvibe.ui.theme.GreenPrimary
 import shamsiddin.project.tourvibe.utils.Manager
 import shamsiddin.project.tourvibe.utils.SharedPreferences
 
@@ -158,15 +160,15 @@ private fun Body(destination: Destination, scrollState: ScrollState) {
     val shared = SharedPreferences.getInstance(LocalContext.current)
     val currentUser = Manager.getToken(LocalContext.current)
     val buttonState = remember { mutableStateOf(false) }
-
+//BottomSheet
+    var sheetState by remember { mutableStateOf(false) }
     //ViewPager
     var imageState by remember { mutableStateOf(false) }
     val placeImages = destination.images.toMutableList()
     placeImages.add(0, destination.mainImage)
     val viewPagerState = rememberPagerState { placeImages.size }
 
-    //BottomSheet
-    var sheetState by remember { mutableStateOf(false) }
+
 
 
 
@@ -425,6 +427,14 @@ fun ReviewItem(comment: Comment){
         Text(text = comment.text, modifier = Modifier
             .fillMaxWidth()
             .padding(start = 5.dp, end = 5.dp), color = Color.Gray, fontSize = 14.sp)
+
+        androidx.compose.material3.Divider(
+            modifier = Modifier
+
+                .padding(bottom = 16.dp, end = 16.dp, start = 16.dp),
+            thickness = 0.5.dp,
+            color = GreenPrimary
+        )
     }
 }
 

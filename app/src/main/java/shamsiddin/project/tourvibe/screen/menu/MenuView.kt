@@ -120,7 +120,7 @@ fun Menu(navController: NavController) {
 
                         Row {
                             Icon(
-                                painter = painterResource(id = shamsiddin.project.tourvibe.R.drawable.location),
+                                painter = painterResource(id = shamsiddin.project.tourvibe.R.drawable.star),
                                 modifier = Modifier.size(28.dp),
 
                                 contentDescription = "location",

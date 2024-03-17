@@ -12,7 +12,7 @@ data class Restaurant(
     var rating: Double,
     var mainImage:String,
     var name:String,
-    var link:String
+    var overViewVideo:String
 ){
     override fun toString(): String = Uri.encode(Gson().toJson(this))
 

@@ -15,6 +15,7 @@ val GreenPrimary = Color(0xFF2F7A83)
 
 val TITLE = Color(0xFFEEEEEE)
 val TITLETEXT = Color(0xFF31363F)
+val NEWCOLOR = Color(0xFF222831)
 
 
 

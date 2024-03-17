@@ -70,6 +70,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavController
 import coil.compose.SubcomposeAsyncImage
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
@@ -86,7 +87,10 @@ import shamsiddin.project.tourvibe.ui.theme.AshGrey
 import shamsiddin.project.tourvibe.ui.theme.DeepSlate
 import shamsiddin.project.tourvibe.ui.theme.GreenPrimary
 import shamsiddin.project.tourvibe.ui.theme.LightGrey
+import shamsiddin.project.tourvibe.ui.theme.MidnightBlue
+import shamsiddin.project.tourvibe.ui.theme.NEWCOLOR
 import shamsiddin.project.tourvibe.ui.theme.TITLE
+import shamsiddin.project.tourvibe.ui.theme.TITLETEXT
 import shamsiddin.project.tourvibe.utils.Manager
 import shamsiddin.project.tourvibe.utils.SharedPreferences
 
@@ -98,7 +102,9 @@ fun RestaurantScreen(restaurant: Restaurant, navController: NavController, food_
 //    }
     val scroll: ScrollState = rememberScrollState(0)
 
-    Log.d(TAG, "RestaurantScreen: ${restaurant.link}")
+    Log.d("qarab tur", "RestaurantScreen: ${restaurant.overViewVideo}")
+    val cnt = LocalLifecycleOwner.current
+
 
 
     Column(modifier = Modifier.fillMaxWidth()) {
@@ -112,46 +118,129 @@ fun RestaurantScreen(restaurant: Restaurant, navController: NavController, food_
     Column(modifier = Modifier.fillMaxWidth()) {
         Spacer(Modifier.height(240.dp))
         Card(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MidnightBlue),
             shape = RoundedCornerShape(topStart = 40.dp, topEnd = 40.dp),
             elevation = CardDefaults.cardElevation(5.dp)
         ) {
             repeat(1) {
 
-                Row {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
                     Column {
 
+
+                        Text(
+                            text = food_name,
+                            style = MaterialTheme.typography.bodyMedium,
+                            modifier = Modifier.padding(top = 16.dp, start = 16.dp),
+                            fontSize = 25.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = NEWCOLOR
+                        )
+                        Text(
+                            text = "In "+restaurant.name,
+                            style = MaterialTheme.typography.bodyMedium,
+                            textAlign = TextAlign.Justify,
+                            color = Color.Gray,
+                            modifier = Modifier.padding(top = 4.dp, start = 16.dp)
+                        )
                     }
                     Text(
                         text = restaurant.price,
                         style = MaterialTheme.typography.bodyMedium,
                         modifier = Modifier
-                            .padding(16.dp), fontSize = 25.sp, fontWeight = FontWeight.Bold
+                            .padding(top = 22.dp, end = 24.dp),
+                        fontSize = 25.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = NEWCOLOR
                     )
                 }
-                Text(
-                    text = food_name,
-                    style = MaterialTheme.typography.bodyMedium,
-                    textAlign = TextAlign.Justify,
+                Divider(
                     modifier = Modifier
-                        .padding(16.dp)
+                        .fillMaxWidth()
+                        .padding(16.dp), thickness = 1.dp, color = GreenPrimary
                 )
-                Column(
-                    modifier = Modifier
-                ) {
-                    Divider(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp), thickness = 1.dp, color = GreenPrimary
-                    )
 
-                    Text(
-                        text = "Related images",
-                        style = MaterialTheme.typography.bodyMedium,
-                        modifier = Modifier
-                            .padding(16.dp), fontSize = 25.sp, fontWeight = FontWeight.Bold
-                    )
+                Row(
+                    Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    Row {
+                        Icon(
+                            painter = painterResource(id = shamsiddin.project.tourvibe.R.drawable.star),
+                            modifier = Modifier.size(28.dp),
+
+                            contentDescription = "location",
+                        )
+//                            Spacer(modifier = Modifier.height(3.dp))
+                        Text(
+                            text = restaurant.rating.toString(),
+                            color = Color.Black,
+                            fontSize = 17.sp,
+                            modifier = Modifier.padding(start = 4.dp, top = 5.dp),
+
+                            )
+                    }
+                    Row {
+                        Icon(
+                            painter = painterResource(id = shamsiddin.project.tourvibe.R.drawable.calorie),
+                            modifier = Modifier.size(28.dp),
+
+                            contentDescription = "location",
+                        )
+//                            Spacer(modifier = Modifier.height(3.dp))
+                        Text(
+                            text = restaurant.caloryInfo,
+                            color = Color.Black,
+                            fontSize = 17.sp,
+                            modifier = Modifier.padding(start = 4.dp, top = 5.dp),
+
+                            )
+                    }
+                    Row {
+                        Icon(
+                            painter = painterResource(id = shamsiddin.project.tourvibe.R.drawable.time),
+                            modifier = Modifier.size(28.dp),
+
+                            contentDescription = "location",
+                        )
+//                            Spacer(modifier = Modifier.height(3.dp))
+                        Text(
+                            text = "5-10 min",
+                            color = Color.Black,
+                            fontSize = 17.sp,
+                            modifier = Modifier.padding(start = 4.dp, top = 5.dp),
+
+                            )
+                    }
                 }
+
+                AndroidView(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 10.dp, vertical = 16.dp)
+                    .clip(RoundedCornerShape(16.dp)), factory = { context ->
+                    YouTubePlayerView(context = context).apply {
+                        cnt.lifecycle.addObserver(this)
+
+                        addYouTubePlayerListener(object : AbstractYouTubePlayerListener() {
+                            override fun onReady(youTubePlayer: YouTubePlayer) {
+                                youTubePlayer.loadVideo(restaurant.overViewVideo, 0f)
+                                youTubePlayer.pause()
+                                var playbackRate = PlayerConstants.PlaybackRate.values()
+//                                youTubePlayer.setPlaybackRate(playbackRate.get(1))
+//                                youTubePlayer.toggleFullscreen()
+
+                            }
+                        })
+                    }
+                })
+
+                Log.d("Restaurant link", "RestaurantScreen:${restaurant.overViewVideo} ")
+
             }
         }
 //    Header(mainImage = restaurant.mainImage, scrollState = scroll)
@@ -163,22 +252,22 @@ fun RestaurantScreen(restaurant: Restaurant, navController: NavController, food_
 @Composable
 private fun Header(mainImage: String, scrollState: ScrollState) {
 
-        val headerHeightPx = with(LocalDensity.current) { 300.dp.toPx() }
+    val headerHeightPx = with(LocalDensity.current) { 300.dp.toPx() }
 
-        Box(modifier = Modifier
-            .fillMaxWidth()
-            .height(300.dp)
-            .graphicsLayer {
-                alpha = (-1f / headerHeightPx) * scrollState.value + 1
-            }) {
-            SubcomposeAsyncImage(
-                model = mainImage,
-                contentDescription = null,
-                loading = { CircularProgressIndicator() },
-                contentScale = ContentScale.FillBounds
-            )
-        }
+    Box(modifier = Modifier
+        .fillMaxWidth()
+        .height(300.dp)
+        .graphicsLayer {
+            alpha = (-1f / headerHeightPx) * scrollState.value + 1
+        }) {
+        SubcomposeAsyncImage(
+            model = mainImage,
+            contentDescription = null,
+            loading = { CircularProgressIndicator() },
+            contentScale = ContentScale.FillBounds
+        )
     }
+}
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -229,11 +318,6 @@ private fun Body(restaurant: Restaurant, scroll: ScrollState, food_name: String)
     }
 
 
-
-
-
-
-
 //    Column(
 //        horizontalAlignment = Alignment.CenterHorizontally,
 //        modifier = Modifier
@@ -267,21 +351,7 @@ private fun Body(restaurant: Restaurant, scroll: ScrollState, food_name: String)
 //                )
 //            }
 //
-////            Log.d("Restaurant link", "RestaurantScreen:${restaurant} ")
-////            AndroidView(modifier = Modifier
-////                .fillMaxWidth()
-////                .padding(horizontal = 10.dp)
-////                .clip(RoundedCornerShape(16.dp)), factory = { context ->
-////                YouTubePlayerView(context = context).apply {
-////                    cnt.lifecycle.addObserver(this)
 ////
-////                    addYouTubePlayerListener(object : AbstractYouTubePlayerListener() {
-////                        override fun onReady(youTubePlayer: YouTubePlayer) {
-////                            youTubePlayer.loadVideo(restaurant.link, 0f)
-////                        }
-////                    })
-////                }
-////            })
 //        }
 //    }
 }
