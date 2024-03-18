@@ -113,7 +113,7 @@ fun Menu(navController: NavController) {
                     }
                     Column {
                         Text(
-                            text = "    Hello ${user}",
+                            text = "    Hello ${user.name}",
                             color = Color.Gray,
                             modifier = Modifier.padding(start = 4.dp),
 

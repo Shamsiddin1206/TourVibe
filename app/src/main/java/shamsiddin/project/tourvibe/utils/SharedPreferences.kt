@@ -37,4 +37,8 @@ class SharedPreferences private constructor(context: Context){
         return shared.getString("Country", "")!!
     }
 
+    fun logOut() {
+        edit.remove("User").apply()
+    }
+
 }
