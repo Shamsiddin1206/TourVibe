@@ -104,6 +104,23 @@ class Manager {
                 }
             })
         }
+        fun getHotelCities(callback: (List<String>) -> Unit){
+            val api = APIClient.getInstance().create(APIService::class.java)
+            api.getHotelCities().enqueue(object : Callback<List<String>> {
+                override fun onResponse(
+                    call: Call<List<String>>, response: Response<List<String>>
+                ) {
+//                    Log.d("Tag","${response.body()!!}")
+                    callback(response.body()!!)
+
+                }
+
+                override fun onFailure(call: Call<List<String>>, t: Throwable) {
+                    Log.d("TAG", "$t")
+                    callback(emptyList())
+                }
+            })
+        }
 
         fun giveToken(context: Context, user: String) {
             val sharedPreferences: SharedPreferences =

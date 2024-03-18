@@ -23,6 +23,8 @@ interface APIService {
     fun getRestaurants(): Call<List<Restaurant>>
     @GET("hotels/")
     fun getHotels(): Call<List<Hotel>>
+    @GET("hotels/categories/")
+    fun getHotelCities(): Call<List<String>>
 
     @GET("login/{username}/{password}")
     fun login(@Path("username") username: String, @Path("password") password: String): Call<String>

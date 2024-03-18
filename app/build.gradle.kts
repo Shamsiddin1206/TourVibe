@@ -90,4 +90,13 @@ dependencies {
     implementation ("androidx.compose.material:material-icons-extended-android:1.7.0-alpha03")
 
 
+    implementation ("com.google.maps.android:maps-compose:2.11.4")
+    implementation ("com.google.android.gms:play-services-maps:18.1.0")
+
+    // Optional Util Library
+    implementation ("com.google.maps.android:maps-compose-utils:2.11.4")
+    implementation ("com.google.maps.android:maps-compose-widgets:2.11.4")
+
+    // Optional Accompanist permissions to request permissions in compose
+    implementation ("com.google.accompanist:accompanist-permissions:0.31.5-beta")
 }

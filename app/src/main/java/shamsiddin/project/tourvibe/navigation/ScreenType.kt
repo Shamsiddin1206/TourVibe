@@ -5,6 +5,8 @@ sealed class ScreenType(val route: String){
     object Login: ScreenType("login_screen")
     object Registration: ScreenType("registration_screen")
     object Hotels: ScreenType("hotels_screen")
+    object SingleHotel: ScreenType("single_hotel/{hotel}")
+    object ImageSlider: ScreenType("image_slider/{hotel}/{id}")
     object Default: ScreenType("default_screen")
     object Menu: ScreenType("menu_screen")
     object GuideBook: ScreenType("guideBook_screen")
