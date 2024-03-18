@@ -31,7 +31,6 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Divider
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
@@ -169,9 +168,6 @@ private fun Body(destination: Destination, scrollState: ScrollState) {
     val viewPagerState = rememberPagerState { placeImages.size }
 
 
-
-
-
     Box(modifier = Modifier.fillMaxSize()){
         if (imageState){
             Row(modifier = Modifier
@@ -204,7 +200,7 @@ private fun Body(destination: Destination, scrollState: ScrollState) {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                     Image(painter = painterResource(id = R.drawable.star_2), contentDescription = "", modifier = Modifier.size(20.dp))
                                     Spacer(modifier = Modifier.width(5.dp))
-                                    Text(text = destination.rating.toString(), fontSize = 15.sp)
+                                    Text(text = destination.ratings.toString(), fontSize = 15.sp)
                                 }
                             }
                             Spacer(modifier = Modifier.height(10.dp))

@@ -11,7 +11,7 @@ data class Destination(
     var name: String,
     var description: String,
     var history: String,
-    var rating: Double,
+    var ratings: Double,
     var comments: List<Comment>?,
     var category: List<String>,
     var locatedCountry: String,

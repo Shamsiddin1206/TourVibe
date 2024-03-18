@@ -88,7 +88,6 @@ fun Registration(navController: NavHostController) {
             .padding(20.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
-
     ) {
         val imageLoader = ImageLoader.Builder(LocalContext.current)
             .components {

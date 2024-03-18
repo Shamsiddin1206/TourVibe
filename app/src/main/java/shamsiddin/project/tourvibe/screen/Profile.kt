@@ -111,15 +111,14 @@ fun Profile(navController: NavController){
             Card(modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 10.dp, end = 10.dp)
-                .height(60.dp)
+                .height(50.dp)
                 .clickable {
-                    SharedPreferences.getInstance(context).logOut()
                     navController.navigate(ScreenType.Login.route){
                         popUpTo(navController.graph.id){
                             inclusive = true
                         }
                     }
-
+                    shared.logOut()
 
                 }, shape = RoundedCornerShape(10.dp), elevation = CardDefaults.cardElevation(5.dp), colors = CardDefaults.cardColors(
                 Color.White)) {
