@@ -227,7 +227,7 @@ fun Login(navController: NavHostController) {
                 Manager.login(email = username.text, password = password.text) {
                     Log.d("TAG", "Login: $it")
                     if (it.id >= 0) {
-                        SharedPreferences.getInstance(context).setUser(user)
+                        SharedPreferences.getInstance(context).setUser(it)
                         Log.d("User", "Login: ${SharedPreferences.getInstance(context).getUser()}")
                         Toast.makeText(context, "succesfully logged up", Toast.LENGTH_SHORT).show()
                         navController.navigate(ScreenType.Default.route)

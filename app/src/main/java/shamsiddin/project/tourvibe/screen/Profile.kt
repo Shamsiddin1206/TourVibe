@@ -15,10 +15,15 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.Icon
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.IconButton
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.OutlinedTextField
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.Text
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Edit
@@ -106,27 +111,20 @@ fun Profile(navController: NavController){
             Card(modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 10.dp, end = 10.dp)
-//                .height(40.dp)
+                .height(50.dp)
                 .clickable {
                     shared.setUser(null)
                     navController.navigate(ScreenType.Login.route)
-                           }, shape = RoundedCornerShape(10.dp), elevation = CardDefaults.cardElevation(5.dp), colors = CardDefaults.cardColors(
+                }, shape = RoundedCornerShape(10.dp), elevation = CardDefaults.cardElevation(5.dp), colors = CardDefaults.cardColors(
                 Color.White)) {
                 Spacer(modifier = Modifier.width(5.dp))
-                Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                    Icon(painter = painterResource(id = R.drawable.logout_ic), contentDescription = "", modifier = Modifier.size(25.dp))
+                Row(modifier = Modifier.fillMaxSize(), verticalAlignment = Alignment.CenterVertically) {
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Icon(painter = painterResource(id = R.drawable.logout_ic), contentDescription = "", modifier = Modifier.size(25.dp), tint = ProfilePrimary)
                     Spacer(modifier = Modifier.width(5.dp))
                     Text(text = "Log Out", color = ProfilePrimary, fontSize = 15.sp)
                 }
             }
-
-
-//            Button(onClick = {
-//                Manager.giveToken(context,"")
-//                navController.navigate(ScreenType.Login.route)
-//            }) {
-//                androidx.compose.material3.Text(text = "log out", color = Color.Red)
-//            }
         }
     }
 }

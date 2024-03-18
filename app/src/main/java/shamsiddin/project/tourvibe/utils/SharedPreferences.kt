@@ -21,7 +21,7 @@ class SharedPreferences private constructor(context: Context){
     }
 
     fun setUser(user: User?){
-        edit.putString("User", gson.toJson(user))
+        edit.putString("User", gson.toJson(user)).apply()
     }
     fun getUser(): User?{
         val data = shared.getString("User", "")
