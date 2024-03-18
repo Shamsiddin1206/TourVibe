@@ -200,6 +200,7 @@ fun GuideBook(navController: NavController) {
 
         Scaffold(modifier = Modifier.background(Color.White), containerColor = Color.White) {
             SearchBar(
+                modifier = Modifier.fillMaxWidth().padding(start = if (active) 0.dp else 10.dp, end = if (active) 0.dp else 10.dp),
                 query = searchText,
                 onQueryChange = { searchText = it},
                 onSearch = {

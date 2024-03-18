@@ -310,9 +310,9 @@ private fun Body(food: Food, scrollState: ScrollState, navController: NavControl
                             .fillMaxWidth()
                             .padding(start = 16.dp, end = 16.dp)
                     ) {
-                        if (food.comments!!.size != 0) {
+                        if (food.comments!!.isNotEmpty()) {
                             items(food.comments!!.reversed()) {
-                                ReviewItem(it)
+                                ReviewItem(it, (it==food.comments!![food.comments!!.lastIndex]))
                             }
                         }
                     }
