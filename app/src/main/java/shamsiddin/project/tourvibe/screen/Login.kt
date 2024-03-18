@@ -18,6 +18,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AccountCircle
+import androidx.compose.material.icons.rounded.Email
 import androidx.compose.material.icons.rounded.Lock
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -42,9 +43,11 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import coil.ImageLoader
 import coil.compose.rememberAsyncImagePainter
 import coil.decode.GifDecoder
@@ -54,6 +57,11 @@ import shamsiddin.project.tourvibe.model.User
 import shamsiddin.project.tourvibe.navigation.ScreenType
 import shamsiddin.project.tourvibe.utils.Manager
 
+@Composable
+@Preview
+fun LoginPreview(){
+    Login(rememberNavController())
+}
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Login(navController: NavHostController) {
@@ -111,7 +119,8 @@ fun Login(navController: NavHostController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White),
+            .background(Color.White)
+            .padding(20.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
 
@@ -154,14 +163,14 @@ fun Login(navController: NavHostController) {
                 username = it
             },
             singleLine = true,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
             shape = RoundedCornerShape(16.dp),
             placeholder = {
-                Text(text = "Username", fontSize = 14.sp)
+                Text(text = "Email", fontSize = 14.sp)
             },
             leadingIcon = {
                 Icon(
-                    imageVector = Icons.Rounded.AccountCircle,
+                    imageVector = Icons.Rounded.Email,
                     contentDescription = "",
                     tint = Color.Black
                 )
@@ -248,7 +257,7 @@ fun Login(navController: NavHostController) {
         Button(
             onClick = { navController.navigate(ScreenType.Registration.route) },
             shape = RoundedCornerShape(16.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color.Cyan),
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2F7A83)),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 62.dp)
