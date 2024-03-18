@@ -200,6 +200,7 @@ class Manager {
             val api = APIClient.getInstance().create(APIService::class.java)
             api.giveComment(address, address_id, username, rating, text).enqueue(object : Callback<String> {
                 override fun onResponse(call: Call<String>, response: Response<String>) {
+                    Log.d("abdulbosit api", "onResponse: ${response.body()}")
                     callback(response.body()!!)
                 }
 

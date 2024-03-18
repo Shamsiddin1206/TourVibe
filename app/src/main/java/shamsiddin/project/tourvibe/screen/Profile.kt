@@ -113,7 +113,7 @@ fun Profile(navController: NavController){
                 .padding(start = 10.dp, end = 10.dp)
                 .height(60.dp)
                 .clickable {
-//                    SharedPreferences.getInstance(context).logOut()
+                    SharedPreferences.getInstance(context).logOut()
                     navController.navigate(ScreenType.Login.route){
                         popUpTo(navController.graph.id){
                             inclusive = true

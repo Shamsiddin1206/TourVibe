@@ -30,7 +30,7 @@ fun Splash(navController:NavController) {
 
     val context = LocalContext.current
     val user = SharedPreferences.getInstance(context).getUser()
-    Log.d(TAG, "Splash: $user")
+    Log.d(TAG, "Splash: ${user?.name}")
     LaunchedEffect(true) {
         delay(3250)
         if (user != null){

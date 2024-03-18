@@ -439,6 +439,8 @@ private fun Body(food: Food, scrollState: ScrollState, navController: NavControl
                                                         .show()
                                                     return@Button
                                                 } else {
+                                                    Log.d("eoihdeiuhcn", "Body: ${food.id}, ${user.name}, ${myRating.toDouble()}, ${comment.text},")
+                                                    Log.d("GetUser", "Body: ${SharedPreferences.getInstance(context).getUser()},")
                                                     Manager.giveComment(
                                                         "food",
                                                         food.id,
