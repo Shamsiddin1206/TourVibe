@@ -62,6 +62,7 @@ import shamsiddin.project.tourvibe.model.Destination
 import shamsiddin.project.tourvibe.model.Food
 import shamsiddin.project.tourvibe.ui.theme.BACKGROUNDCARD
 import shamsiddin.project.tourvibe.utils.Manager
+import shamsiddin.project.tourvibe.utils.SharedPreferences
 
 
 var TAG = "TAG"
@@ -75,7 +76,7 @@ fun Menu(navController: NavController) {
     val context = LocalContext.current
     val focusRequester = remember { FocusRequester() }
 //    val user = viewModel.user.observeAsState().value
-    val user = Manager.getToken(context)
+    val user = SharedPreferences.getInstance(LocalContext.current).getUser()!!
 
     var foodList by remember {
         mutableStateOf(listOf<Food>())

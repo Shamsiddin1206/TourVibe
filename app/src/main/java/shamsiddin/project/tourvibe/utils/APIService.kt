@@ -27,10 +27,10 @@ interface APIService {
     fun getHotelCities(): Call<List<String>>
 
     @GET("login/{username}/{password}")
-    fun login(@Path("username") username: String, @Path("password") password: String): Call<String>
+    fun login(@Path("username") username: String, @Path("password") password: String): Call<User>
 
     @GET("register/{username}/{password}/{name}/{country}")
-    fun register(@Path("username") username: String,@Path("password") password: String,@Path("name") name: String,@Path("country") country: String): Call<String>
+    fun register(@Path("username") username: String,@Path("password") password: String,@Path("name") name: String,@Path("country") country: String): Call<User>
 
     @GET("foods/categories/")
     fun getFoodsAllCategory(): Call<List<String>>

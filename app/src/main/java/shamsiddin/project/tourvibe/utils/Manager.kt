@@ -122,49 +122,35 @@ class Manager {
             })
         }
 
-        fun giveToken(context: Context, user: String) {
-            val sharedPreferences: SharedPreferences =
-                context.getSharedPreferences("db", Context.MODE_PRIVATE)
-            val editor: SharedPreferences.Editor = sharedPreferences.edit()
-            editor.putString("user", user)
-            editor.apply()
-        }
-
-        fun getToken(context: Context): String {
-            val sharedPreferences: SharedPreferences =
-                context.getSharedPreferences("db", Context.MODE_PRIVATE)
-            return sharedPreferences.getString("user", "") ?: ""
-        }
-
         fun register(
             email: String,
             password: String,
             name: String,
             country: String,
-            callback: (String) -> Unit
+            callback: (User) -> Unit
         ) {
             val api = APIClient.getInstance().create(APIService::class.java)
-            api.register(email, password, name, country).enqueue(object : Callback<String> {
-                override fun onResponse(call: Call<String>, response: Response<String>) {
+            api.register(email, password, name, country).enqueue(object : Callback<User> {
+                override fun onResponse(call: Call<User>, response: Response<User>) {
                     Log.d("TAG", "onResponse: ${response.body()}")
                     callback(response.body()!!)
                 }
 
-                override fun onFailure(call: Call<String>, t: Throwable) {
+                override fun onFailure(call: Call<User>, t: Throwable) {
                     Log.d("TAG", "$t")
 
                 }
             })
         }
 
-        fun login(email: String, password: String, callback: (String) -> Unit) {
+        fun login(email: String, password: String, callback: (User) -> Unit) {
             val api = APIClient.getInstance().create(APIService::class.java)
-            api.login(email, password).enqueue(object : Callback<String> {
-                override fun onResponse(call: Call<String>, response: Response<String>) {
+            api.login(email, password).enqueue(object : Callback<User> {
+                override fun onResponse(call: Call<User>, response: Response<User>) {
                     callback(response.body()!!)
                 }
 
-                override fun onFailure(call: Call<String>, t: Throwable) {
+                override fun onFailure(call: Call<User>, t: Throwable) {
                     Log.d("TAG", "$t")
 
                 }

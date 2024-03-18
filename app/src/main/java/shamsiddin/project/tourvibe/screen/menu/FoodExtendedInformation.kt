@@ -88,6 +88,7 @@ import shamsiddin.project.tourvibe.ui.theme.NEWCOLOR
 import shamsiddin.project.tourvibe.ui.theme.TITLE
 import shamsiddin.project.tourvibe.ui.theme.TITLETEXT
 import shamsiddin.project.tourvibe.utils.Manager
+import shamsiddin.project.tourvibe.utils.SharedPreferences
 
 @Composable
 fun FoodExtendedInformation(navController: NavController, food: Food) {
@@ -185,7 +186,7 @@ private fun Body(food: Food, scrollState: ScrollState, navController: NavControl
 
     var comment by remember { mutableStateOf(TextFieldValue("")) }
 
-    val user = Manager.getToken(LocalContext.current)
+    val user = SharedPreferences.getInstance(LocalContext.current).getUser()!!
     val dataFetched = remember { mutableStateOf(false) }
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
@@ -375,7 +376,7 @@ private fun Body(food: Food, scrollState: ScrollState, navController: NavControl
 
                                         Column {
                                             Text(
-                                                text = user,
+                                                text = user.name,
                                                 fontSize = 18.sp,
                                                 color = Color.Black,
                                             )
@@ -441,7 +442,7 @@ private fun Body(food: Food, scrollState: ScrollState, navController: NavControl
                                                     Manager.giveComment(
                                                         "food",
                                                         food.id,
-                                                        user,
+                                                        user.name,
                                                         myRating.toDouble(),
                                                         comment.text
                                                     ) {

@@ -20,6 +20,8 @@ import shamsiddin.project.tourvibe.R
 import shamsiddin.project.tourvibe.navigation.ScreenType
 import shamsiddin.project.tourvibe.ui.theme.GreenPrimary
 import shamsiddin.project.tourvibe.utils.Manager
+import shamsiddin.project.tourvibe.utils.SharedPreferences
+
 var TAG = "TAG"
 
 @Composable
@@ -27,14 +29,14 @@ var TAG = "TAG"
 fun Splash(navController:NavController) {
 
     val context = LocalContext.current
-    val user = Manager.getToken(context)
-    Log.d(TAG, "Splash: ${user}")
+    val user = SharedPreferences.getInstance(context).getUser()
+    Log.d(TAG, "Splash: $user")
     LaunchedEffect(true) {
         delay(3250)
-        if (user == "" ){
-            navController.navigate(ScreenType.Registration.route)
+        if (user != null){
+            navController.navigate(ScreenType.Default.route)
         }
-         else{   navController.navigate(ScreenType.Default.route)}
+         else{   navController.navigate(ScreenType.Registration.route)}
         }
 
 

@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.AccountCircle
 import androidx.compose.material.icons.rounded.Email
 import androidx.compose.material.icons.rounded.Lock
 import androidx.compose.material3.Button
@@ -56,6 +55,7 @@ import shamsiddin.project.tourvibe.R
 import shamsiddin.project.tourvibe.model.User
 import shamsiddin.project.tourvibe.navigation.ScreenType
 import shamsiddin.project.tourvibe.utils.Manager
+import shamsiddin.project.tourvibe.utils.SharedPreferences
 
 @Composable
 @Preview
@@ -226,8 +226,9 @@ fun Login(navController: NavHostController) {
 
                 Manager.login(email = username.text, password = password.text) {
                     Log.d("TAG", "Login: $it")
-                    if (it == "Success") {
-                        Manager.giveToken(context, username.text)
+                    if (it.id >= 0) {
+                        SharedPreferences.getInstance(context).setUser(user)
+                        Log.d("User", "Login: ${SharedPreferences.getInstance(context).getUser()}")
                         Toast.makeText(context, "succesfully logged up", Toast.LENGTH_SHORT).show()
                         navController.navigate(ScreenType.Default.route)
                     }

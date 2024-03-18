@@ -57,7 +57,7 @@ import shamsiddin.project.tourvibe.R
 import shamsiddin.project.tourvibe.model.User
 import shamsiddin.project.tourvibe.navigation.ScreenType
 import shamsiddin.project.tourvibe.utils.Manager
-
+import shamsiddin.project.tourvibe.utils.SharedPreferences
 
 
 @Composable
@@ -78,7 +78,7 @@ fun Registration(navController: NavHostController) {
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
 
-
+    val shared = SharedPreferences.getInstance(context)
 
 
     Column(
@@ -242,10 +242,11 @@ fun Registration(navController: NavHostController) {
                 val user = User(name = name.text, password = password.text, email = username.text, country = country.text, id = 0, number = null, savedDestinations = null, image = null, savedFoods = null)
 
                 Manager.register(name = name.text, password = password.text, email = username.text, country = country.text){
-                    if (it == "Success"){
+                    if (it.id >= 0){
+                        shared.setUser(it)
+                        Log.d("User", "Registration: ${shared.getUser()}")
                         navController.navigate(ScreenType.Default.route)
                         Toast.makeText(context, "succesfully signed up", Toast.LENGTH_SHORT).show()
-                        Manager.giveToken(context,username.text)
                     }
                     else {
                         Toast.makeText(context, "couldnt create your account", Toast.LENGTH_SHORT).show()
@@ -283,10 +284,7 @@ fun Registration(navController: NavHostController) {
                 fontSize = 14.sp,
                 modifier = Modifier.padding(vertical = 8.dp)
             )
-
         }
-
-
     }
 }
 

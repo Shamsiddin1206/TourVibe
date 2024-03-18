@@ -158,7 +158,7 @@ private fun Body(destination: Destination, scrollState: ScrollState) {
 
     //Comments
     val shared = SharedPreferences.getInstance(LocalContext.current)
-    val currentUser = Manager.getToken(LocalContext.current)
+    val currentUser = shared.getUser()!!
     val buttonState = remember { mutableStateOf(false) }
 //BottomSheet
     var sheetState by remember { mutableStateOf(false) }
@@ -279,7 +279,7 @@ private fun Body(destination: Destination, scrollState: ScrollState) {
                                                 ))
                                         Spacer(modifier = Modifier.width(10.dp))
                                         Column {
-                                            Text(text = currentUser, color = Color.Black, fontWeight = FontWeight.Bold, fontSize = 15.sp)
+                                            Text(text = currentUser!!.name, color = Color.Black, fontWeight = FontWeight.Bold, fontSize = 15.sp)
                                             Text(text = "Country: ${destination.locatedCountry}", fontSize = 13.sp)
                                         }
                                     }
@@ -318,7 +318,7 @@ private fun Body(destination: Destination, scrollState: ScrollState) {
                                         text = { Text(text = "Confirm") },
                                         icon = { Icon(imageVector = Icons.Filled.DoneOutline, contentDescription = "") },
                                         onClick = {
-                                            Manager.giveComment("destination",destination.id,currentUser,myRating.toDouble(),commentText){
+                                            Manager.giveComment("destination",destination.id,currentUser.name,myRating.toDouble(),commentText){
                                                 Log.d("COMMENT", "Body: ${it}")
                                             }
                                             sheetState = false },

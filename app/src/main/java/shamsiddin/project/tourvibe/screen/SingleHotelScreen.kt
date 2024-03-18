@@ -105,6 +105,7 @@ import shamsiddin.project.tourvibe.R
 import shamsiddin.project.tourvibe.model.Comment
 import shamsiddin.project.tourvibe.model.Hotel
 import shamsiddin.project.tourvibe.utils.Manager
+import shamsiddin.project.tourvibe.utils.SharedPreferences
 
 
 //var comments = listOf(
@@ -133,7 +134,7 @@ fun SingleHotelScreen(navHostController: NavHostController, hotel: Hotel) {
     Box(modifier = Modifier.fillMaxSize()) {
         val buttonState = remember { mutableStateOf(false) }
         var sheetState by remember { mutableStateOf(false) }
-        val currentUser = Manager.getToken(LocalContext.current)
+        val currentUser =SharedPreferences.getInstance(LocalContext.current).getUser()!!
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -287,7 +288,7 @@ fun SingleHotelScreen(navHostController: NavHostController, hotel: Hotel) {
                                 Spacer(modifier = Modifier.width(10.dp))
                                 Column {
                                     Text(
-                                        text = currentUser,
+                                        text = currentUser.name,
                                         color = Color.Black,
                                         fontWeight = FontWeight.Bold,
                                         fontSize = 15.sp
@@ -355,7 +356,7 @@ fun SingleHotelScreen(navHostController: NavHostController, hotel: Hotel) {
                                     Manager.giveComment(
                                         "hotel",
                                         hotel.id,
-                                        currentUser,
+                                        currentUser.name,
                                         myRating.toDouble(),
                                         commentText
                                     ) {

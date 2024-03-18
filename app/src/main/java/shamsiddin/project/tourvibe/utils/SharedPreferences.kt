@@ -20,7 +20,7 @@ class SharedPreferences private constructor(context: Context){
         }
     }
 
-    fun setUser(user: User){
+    fun setUser(user: User?){
         edit.putString("User", gson.toJson(user))
     }
     fun getUser(): User?{
