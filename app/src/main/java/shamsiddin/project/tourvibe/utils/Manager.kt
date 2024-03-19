@@ -172,6 +172,67 @@ class Manager {
             })
         }
 
+        fun getFood(id: Int,callback: (Food) -> Unit) {
+            val api = APIClient.getInstance().create(APIService::class.java)
+            api.getFood(id).enqueue(object : Callback<Food> {
+                override fun onResponse(
+                    call: Call<Food>, response: Response<Food>
+                ) {
+                    callback(response.body()!!)
+                }
+
+                override fun onFailure(call: Call<Food>, t: Throwable) {
+                    Log.d("TAG", "onFailure:$t ")
+                }
+            })
+        }
+
+        fun getRestaurant(id: Int,callback: (Restaurant) -> Unit) {
+            val api = APIClient.getInstance().create(APIService::class.java)
+            api.getRestaurant(id).enqueue(object : Callback<Restaurant> {
+                override fun onResponse(
+                    call: Call<Restaurant>, response: Response<Restaurant>
+                ) {
+                    callback(response.body()!!)
+                }
+
+                override fun onFailure(call: Call<Restaurant>, t: Throwable) {
+                    Log.d("TAG", "onFailure:$t ")
+                }
+            })
+        }
+
+        fun getDestination(id: Int,callback: (Destination) -> Unit) {
+            val api = APIClient.getInstance().create(APIService::class.java)
+            api.getDestionation(id).enqueue(object : Callback<Destination> {
+                override fun onResponse(
+                    call: Call<Destination>, response: Response<Destination>
+                ) {
+                    callback(response.body()!!)
+                }
+
+                override fun onFailure(call: Call<Destination>, t: Throwable) {
+                    Log.d("TAG", "onFailure:$t ")
+                }
+            })
+        }
+
+        fun getHotel(id: Int,callback: (Hotel) -> Unit) {
+            val api = APIClient.getInstance().create(APIService::class.java)
+            api.getHotel(id).enqueue(object : Callback<Hotel> {
+                override fun onResponse(
+                    call: Call<Hotel>, response: Response<Hotel>
+                ) {
+                    callback(response.body()!!)
+                }
+
+                override fun onFailure(call: Call<Hotel>, t: Throwable) {
+                    Log.d("TAG", "onFailure:$t ")
+                }
+            })
+        }
+
+
 
         fun getCategoryFoods(category: String, callback: (List<Food>) -> Unit) {
             val api = APIClient.getInstance().create(APIService::class.java)

@@ -103,6 +103,7 @@ import com.google.maps.android.compose.rememberCameraPositionState
 import kotlinx.coroutines.launch
 import shamsiddin.project.tourvibe.R
 import shamsiddin.project.tourvibe.model.Comment
+import shamsiddin.project.tourvibe.model.Food
 import shamsiddin.project.tourvibe.model.Hotel
 import shamsiddin.project.tourvibe.utils.Manager
 import shamsiddin.project.tourvibe.utils.SharedPreferences
@@ -133,6 +134,7 @@ import shamsiddin.project.tourvibe.utils.SharedPreferences
 fun SingleHotelScreen(navHostController: NavHostController, hotel: Hotel) {
     Box(modifier = Modifier.fillMaxSize()) {
         val buttonState = remember { mutableStateOf(false) }
+        var hotelInfo by remember { mutableStateOf(Hotel(id = hotel.id, mainImage = hotel.mainImage, images = hotel.images, name = hotel.name, description = hotel.description, rating = hotel.rating,comments = hotel.comments, locatedCountry = hotel.locatedCountry, locatedState = hotel.locatedState, price = hotel.price, latitude = hotel.latitude, longitude = hotel.longitude)) }
         var sheetState by remember { mutableStateOf(false) }
         val currentUser =SharedPreferences.getInstance(LocalContext.current).getUser()!!
         Column(
@@ -233,7 +235,36 @@ fun SingleHotelScreen(navHostController: NavHostController, hotel: Hotel) {
                 }
 
                 1 -> {
-                    Comments(hotel = hotel)
+                    Manager.getHotel(hotel.id){
+                        hotelInfo = it
+                    }
+                    Comments(hotel = hotelInfo)
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    ) {
+                        if (!hotelInfo.comments.isNullOrEmpty()) {
+                            LazyColumn(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(500.dp)
+                            ) {
+                                items(hotelInfo.comments.size) {
+                                    CommentItem(comment = hotelInfo.comments!![it])
+                                }
+                            }
+                        } else {
+                            Text(
+                                text = "No comments yet",
+                                fontSize = 18.sp,
+                                color = Color.Black,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.align(
+                                    Alignment.Center
+                                )
+                            )
+                        }
+                    }
                     buttonState.value = true
                 }
 
@@ -360,8 +391,14 @@ fun SingleHotelScreen(navHostController: NavHostController, hotel: Hotel) {
                                         myRating.toDouble(),
                                         commentText
                                     ) {
+                                        if (it == "Success"){
+                                            Manager.getHotel(hotel.id){
+                                                hotelInfo = it
+                                            }
+                                        }
                                         Log.d("COMMENT", "Body: ${it}")
                                     }
+
                                     sheetState = false
                                 },
                                 containerColor = Color(android.graphics.Color.parseColor("#49be25")),
@@ -392,32 +429,7 @@ fun SingleHotelScreen(navHostController: NavHostController, hotel: Hotel) {
 @Composable
 fun Comments(hotel: Hotel) {
     var list by remember { mutableStateOf(hotel.comments) }
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-    ) {
-        if (!list.isNullOrEmpty()) {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(500.dp)
-            ) {
-                items(list!!.size) {
-                    CommentItem(comment = list!![it])
-                }
-            }
-        } else {
-            Text(
-                text = "No comments yet",
-                fontSize = 18.sp,
-                color = Color.Black,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.align(
-                    Alignment.Center
-                )
-            )
-        }
-    }
+
 }
 
 @Composable

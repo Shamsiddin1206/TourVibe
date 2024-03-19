@@ -187,6 +187,8 @@ private fun Body(food: Food, scrollState: ScrollState, navController: NavControl
     var comment by remember { mutableStateOf(TextFieldValue("")) }
 
     val user = SharedPreferences.getInstance(LocalContext.current).getUser()!!
+    var foodInfo by remember { mutableStateOf(Food(id = food.id, mainImage = food.mainImage, images = food.images, name = food.name, description = food.description, rating = food.rating,comments = food.comments, locatedCountry = food.locatedCountry, locatedState = food.locatedState, restaurant = food.restaurant)) }
+
     val dataFetched = remember { mutableStateOf(false) }
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
@@ -306,13 +308,16 @@ private fun Body(food: Food, scrollState: ScrollState, navController: NavControl
                         color = GreenPrimary
                     )
 
+                    
+
                     LazyRow(
                         Modifier
                             .fillMaxWidth()
                             .padding(start = 16.dp, end = 16.dp)
                     ) {
-                        if (food.comments!!.isNotEmpty()) {
-                            items(food.comments!!.reversed()) {
+                        if (foodInfo.comments!!.isNotEmpty()) {
+
+                            items(foodInfo.comments!!.reversed()) {
                                 ReviewItem(it, (it==food.comments!![food.comments!!.lastIndex]))
                             }
                         }
@@ -326,8 +331,8 @@ private fun Body(food: Food, scrollState: ScrollState, navController: NavControl
                 if (showDialog.value) {
                     Dialog(onDismissRequest = { showDialog.value = false }) {
                         Surface(
-                            shape = RoundedCornerShape(16.dp),
-                            color = Color.White
+                                shape = RoundedCornerShape(16.dp),
+                        color = Color.White
                         ) {
                             Box(
                                 contentAlignment = Alignment.BottomCenter,
@@ -425,6 +430,7 @@ private fun Body(food: Food, scrollState: ScrollState, navController: NavControl
                                         },
                                     )
 
+
                                     val context = LocalContext.current
                                     Spacer(modifier = Modifier.padding(16.dp))
                                     Box(modifier = Modifier.padding(40.dp, 0.dp, 40.dp, 0.dp)) {
@@ -449,6 +455,9 @@ private fun Body(food: Food, scrollState: ScrollState, navController: NavControl
                                                         comment.text
                                                     ) {
                                                         if (it == "Success") {
+                                                            Manager.getFood(food.id){
+                                                                foodInfo = it
+                                                            }
                                                             showDialog.value = false
                                                             Toast.makeText(
                                                                 context,
@@ -476,6 +485,7 @@ private fun Body(food: Food, scrollState: ScrollState, navController: NavControl
                         }
                     }
                 }
+
 
 
                 Column(
