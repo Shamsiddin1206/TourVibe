@@ -355,24 +355,17 @@ fun FoodItem(food: Food, navController: NavController) {
                     Column {
                         Text(
                             color = Color.White,
-                            modifier = Modifier.padding(start = 20.dp),
+                            modifier = Modifier.padding(start = 20.dp, top = 10.dp, bottom = 10.dp),
                             text = food.name,
                             fontWeight = FontWeight.Bold,
-                            fontSize = 17.sp
+                            fontSize = 19.sp
                         )
 
-                        Text(
-                            color = Color.White,
-                            modifier = Modifier.padding(start = 20.dp, top = 5.dp),
-                            text = food.name,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 17.sp
-                        )
                     }
                     Text(
                         color = Color.White,
-                        text = food.name,
-                        modifier = Modifier.padding(end = 20.dp),
+                        text = food.locatedCountry,
+                        modifier = Modifier.padding(end = 20.dp, top = 10.dp, bottom = 10.dp),
                         fontWeight = FontWeight.Bold,
                         fontSize = 17.sp
                     )
