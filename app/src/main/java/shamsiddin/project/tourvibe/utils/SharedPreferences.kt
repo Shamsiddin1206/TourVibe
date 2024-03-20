@@ -1,16 +1,19 @@
 package shamsiddin.project.tourvibe.utils
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.widget.Toast
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import shamsiddin.project.tourvibe.model.User
 
-class SharedPreferences private constructor(context: Context){
+class SharedPreferences private constructor(val context: Context){
     private val shared = context.getSharedPreferences("data", Context.MODE_PRIVATE)
     private val edit = shared.edit()
     val gson = Gson()
 
     companion object{
+        @SuppressLint("StaticFieldLeak")
         private var instance: SharedPreferences? = null
         fun getInstance(context: Context): SharedPreferences{
             if (instance == null){
@@ -38,7 +41,8 @@ class SharedPreferences private constructor(context: Context){
     }
 
     fun logOut() {
-        edit.remove("User").apply()
+        Toast.makeText(context, "Success or fail", Toast.LENGTH_SHORT).show()
+        edit.putString("User", "")
     }
 
 }

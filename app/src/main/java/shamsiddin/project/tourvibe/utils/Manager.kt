@@ -6,6 +6,7 @@ import android.util.Log
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import retrofit2.create
 import shamsiddin.project.tourvibe.model.Destination
 import shamsiddin.project.tourvibe.model.Food
 import shamsiddin.project.tourvibe.model.Hotel
@@ -122,6 +123,20 @@ class Manager {
             })
         }
 
+        fun updateUser(user: User, callback: (User) -> Unit){
+            val api = APIClient.getInstance().create(APIService::class.java)
+            api.edit(user.id, user.email, user.password, user.name, user.country!!).enqueue(object : Callback<User>{
+                override fun onResponse(call: Call<User>, response: Response<User>) {
+                    Log.d("TAG", "onResponse: ${response.body()}")
+                    callback(response.body()!!)
+                }
+
+                override fun onFailure(call: Call<User>, t: Throwable) {
+                    Log.d("TAG", "$t")
+                }
+            })
+        }
+
         fun register(
             email: String,
             password: String,
@@ -138,7 +153,6 @@ class Manager {
 
                 override fun onFailure(call: Call<User>, t: Throwable) {
                     Log.d("TAG", "$t")
-
                 }
             })
         }

@@ -70,28 +70,6 @@ fun GuideBook(navController: NavController) {
     val user = User(0, "Shamsiddin Tohirov", "takhirovshamsiddin@gmail.com", "+998 99 008 65 08", "Uzbekistan", null, null, null, "12345")
     val shared = SharedPreferences.getInstance(LocalContext.current)
 
-//    val mutableList = mutableListOf<CategoryData>(
-//        CategoryData(
-//            "Beach",
-//            "https://t3.ftcdn.net/jpg/03/82/24/44/360_F_382244401_FNIivSDbE7ojw5sT70WYVgmFsw2R7DHD.jpg"
-//        ),
-//        CategoryData(
-//            "Beach",
-//            "https://t3.ftcdn.net/jpg/03/82/24/44/360_F_382244401_FNIivSDbE7ojw5sT70WYVgmFsw2R7DHD.jpg"
-//        ),
-//        CategoryData(
-//            "Beach",
-//            "https://t3.ftcdn.net/jpg/03/82/24/44/360_F_382244401_FNIivSDbE7ojw5sT70WYVgmFsw2R7DHD.jpg"
-//        ),
-//        CategoryData(
-//            "Beach",
-//            "https://t3.ftcdn.net/jpg/03/82/24/44/360_F_382244401_FNIivSDbE7ojw5sT70WYVgmFsw2R7DHD.jpg"
-//        ),
-//        CategoryData(
-//            "Beach",
-//            "https://t3.ftcdn.net/jpg/03/82/24/44/360_F_382244401_FNIivSDbE7ojw5sT70WYVgmFsw2R7DHD.jpg"
-//        )
-//    )
     val commentsList = mutableListOf<Comment>(
         Comment(0, "", user, "23/02/2024", "Farrukh Buriyev, Ibrohim Mukhtarov, Xoliqov Abdulbosit, Adilov Abdumajid",4.8),
         Comment(0, "", user, "23/02/2024", "Farrukh Buriyev, Ibrohim Mukhtarov, Xoliqov Abdulbosit, Adilov Abdumajid",4.8)

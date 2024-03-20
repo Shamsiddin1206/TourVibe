@@ -1,5 +1,7 @@
 package shamsiddin.project.tourvibe.screen
 
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -54,16 +56,18 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.SubcomposeAsyncImage
 import shamsiddin.project.tourvibe.R
+import shamsiddin.project.tourvibe.model.User
 import shamsiddin.project.tourvibe.navigation.ScreenType
 import shamsiddin.project.tourvibe.ui.theme.GreenPrimary
 import shamsiddin.project.tourvibe.ui.theme.ProfilePrimary
+import shamsiddin.project.tourvibe.utils.Manager
 import shamsiddin.project.tourvibe.utils.SharedPreferences
 
 @Composable
 fun Profile(navController: NavController){
     val shared = SharedPreferences.getInstance(LocalContext.current)
     val context = LocalContext.current
-    val user = shared.getUser()!!
+    var user = shared.getUser()!!
 
     Box(modifier = Modifier
         .fillMaxSize()
@@ -82,19 +86,19 @@ fun Profile(navController: NavController){
                         contentScale = ContentScale.FillBounds
                     )
                 }
-                Card(modifier = Modifier
-                    .size(40.dp)
-                    .align(Alignment.BottomEnd)
-                    .padding(end = 10.dp, bottom = 10.dp),
-                    shape = RoundedCornerShape(50),
-                    colors = CardDefaults.cardColors(containerColor = Color.White),
-                    border = BorderStroke(width = 1.dp, color = GreenPrimary)) {
-                    IconButton(onClick = { /*TODO*/ }, modifier = Modifier
-                        .fillMaxSize()
-                        .padding(2.dp)) {
-                        Icon(imageVector = Icons.Outlined.Edit, contentDescription = "")
-                    }
-                }
+//                Card(modifier = Modifier
+//                    .size(40.dp)
+//                    .align(Alignment.BottomEnd)
+//                    .padding(end = 10.dp, bottom = 10.dp),
+//                    shape = RoundedCornerShape(50),
+//                    colors = CardDefaults.cardColors(containerColor = Color.White),
+//                    border = BorderStroke(width = 1.dp, color = GreenPrimary)) {
+//                    IconButton(onClick = { /*TODO*/ }, modifier = Modifier
+//                        .fillMaxSize()
+//                        .padding(2.dp)) {
+//                        Icon(imageVector = Icons.Outlined.Edit, contentDescription = "")
+//                    }
+//                }
             }
             Spacer(modifier = Modifier.height(10.dp))
             Text(text = user.name, fontWeight = FontWeight.Bold, color = ProfilePrimary, fontSize = 25.sp)
@@ -113,12 +117,15 @@ fun Profile(navController: NavController){
                 .padding(start = 10.dp, end = 10.dp)
                 .height(50.dp)
                 .clickable {
-                    navController.navigate(ScreenType.Login.route){
-                        popUpTo(navController.graph.id){
+                    Toast.makeText(context, "Success or fail", Toast.LENGTH_SHORT).show()
+//                    user = User(0, "","","","", listOf(),"", listOf(),"",)
+                    shared.logOut()
+                    navController.navigate(ScreenType.Login.route) {
+                        popUpTo(navController.graph.id) {
                             inclusive = true
                         }
                     }
-                    shared.logOut()
+
 
                 }, shape = RoundedCornerShape(10.dp), elevation = CardDefaults.cardElevation(5.dp), colors = CardDefaults.cardColors(
                 Color.White)) {
@@ -138,6 +145,10 @@ fun Profile(navController: NavController){
 fun ProfileOutlinedEditText(string: String, type: String){
     var text by remember { mutableStateOf(string) }
     var state by remember { mutableStateOf(true) }
+    val context = LocalContext.current
+
+    val shared = SharedPreferences.getInstance(LocalContext.current)
+    var user = shared.getUser()!!
 
     val mainIcon = when (type) {
         "phone" -> Icons.Outlined.Phone
@@ -154,15 +165,28 @@ fun ProfileOutlinedEditText(string: String, type: String){
             onValueChange = {text = it},
             readOnly = state,
             trailingIcon = {
-                if (state){
-                    IconButton(onClick = { state = false }, modifier = Modifier.size(25.dp)) {
-                        Icon(painter = painterResource(id = R.drawable.edit_ic), contentDescription = "", tint = ProfilePrimary)
-                    }
+                if (type == "phone"){
+                    Toast.makeText(context, "Currently unavailable", Toast.LENGTH_SHORT).show()
                 }else{
-                    IconButton(onClick = {
-                        state = true
-                    }, modifier = Modifier.size(25.dp)) {
-                        Icon(painter = painterResource(id = R.drawable.confirm_ic), contentDescription = "", tint = ProfilePrimary)
+                    if (state){
+                        IconButton(onClick = { state = false }, modifier = Modifier.size(25.dp)) {
+                            Icon(painter = painterResource(id = R.drawable.edit_ic), contentDescription = "", tint = ProfilePrimary)
+                        }
+                    }else{
+                        IconButton(onClick = {
+                            when (type){
+                                "email" -> user.email = text
+                                "name" -> user.name = text
+                                "country" -> user.country = text
+                            }
+                            Manager.updateUser(user){
+                                shared.setUser(user)
+                                Log.d("Change Profile", "ProfileOutlinedEditText: Successfully")
+                            }
+                            state = true
+                        }, modifier = Modifier.size(25.dp)) {
+                            Icon(painter = painterResource(id = R.drawable.confirm_ic), contentDescription = "", tint = ProfilePrimary)
+                        }
                     }
                 }
             },

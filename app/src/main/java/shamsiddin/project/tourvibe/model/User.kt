@@ -9,5 +9,5 @@ data class User(
     var savedDestinations: List<Destination>?,
     var image: String?,
     var savedFoods: List<Food>?,
-    private var password: String
+    var password: String
 )

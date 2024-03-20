@@ -57,8 +57,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -73,6 +75,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -80,15 +83,19 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.SimpleExoPlayer
 import androidx.navigation.NavController
 import coil.compose.SubcomposeAsyncImage
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
 import kotlinx.coroutines.launch
 import shamsiddin.project.tourvibe.R
 import shamsiddin.project.tourvibe.model.Comment
 import shamsiddin.project.tourvibe.model.Destination
-import shamsiddin.project.tourvibe.model.Food
 import shamsiddin.project.tourvibe.ui.theme.GreenPrimary
 import shamsiddin.project.tourvibe.utils.Manager
 import shamsiddin.project.tourvibe.utils.SharedPreferences
@@ -166,9 +173,11 @@ private fun Body(destination: Destination, scrollState: ScrollState) {
     var imageState by remember { mutableStateOf(false) }
     val placeImages = destination.images.toMutableList()
     placeImages.add(0, destination.mainImage)
-    var destinationInfo by remember { mutableStateOf(Destination(id = destination.id, mainImage = destination.mainImage, images = destination.images, name = destination.name, description = destination.description, ratings = destination.ratings,comments = destination.comments, locatedCountry = destination.locatedCountry, locatedState = destination.locatedState, category = destination.category,overViewVideo = destination.overViewVideo, history = destination.history )) }
-
     val viewPagerState = rememberPagerState { placeImages.size }
+
+
+    var list by remember { mutableStateOf(destination.comments?.reversed()) }
+
 
 
     Box(modifier = Modifier.fillMaxSize()){
@@ -240,16 +249,6 @@ private fun Body(destination: Destination, scrollState: ScrollState) {
                                     buttonState.value = false
                                 }
                                 2 -> {
-                                    /// NSPY4
-                                    ///// N63KP
-                                    ////AV3Q2T
-                                    Manager.getDestination(destination.id){
-                                        destinationInfo = it
-                                    }
-                                    Reviews(destination = destinationInfo)
-
-
-                                    var list by remember { mutableStateOf(destinationInfo.comments) }
                                     Box(modifier = Modifier
                                         .fillMaxWidth()) {
                                         if (!list.isNullOrEmpty()){
@@ -257,7 +256,7 @@ private fun Body(destination: Destination, scrollState: ScrollState) {
                                                 .fillMaxWidth()
                                                 .height(1000.dp)){
                                                 items(list!!.size){
-                                                    ReviewItem(comment = list!![it], (it==list!!.lastIndex))
+                                                    ReviewItem(comment = list!![it], (it== list!!.lastIndex))
                                                 }
                                             }
                                         }else{
@@ -277,7 +276,7 @@ private fun Body(destination: Destination, scrollState: ScrollState) {
                 }
             if (buttonState.value){
                     if (sheetState){
-                        var myRating by remember { mutableStateOf(0) }
+                        var myRating by remember { mutableIntStateOf(0) }
                         var commentText by remember { mutableStateOf("") }
 
                         ModalBottomSheet(
@@ -348,6 +347,7 @@ private fun Body(destination: Destination, scrollState: ScrollState) {
                                             Manager.giveComment("destination",destination.id,currentUser.name,myRating.toDouble(),commentText){
                                                 Log.d("COMMENT", "Body: ${it}")
                                             }
+                                            list = destination.comments!!.reversed()
                                             sheetState = false },
                                         containerColor = Color(android.graphics.Color.parseColor("#49be25")),
                                         contentColor = Color.White,
@@ -377,7 +377,28 @@ private fun Body(destination: Destination, scrollState: ScrollState) {
 
 @Composable
 fun OverView(destination: Destination){
+    val lifecicle = LocalLifecycleOwner.current
+
     Column(modifier = Modifier.fillMaxWidth()) {
+        Spacer(modifier = Modifier.height(10.dp))
+        AndroidView(modifier = Modifier
+            .fillMaxWidth()
+            .padding(10.dp), factory = { context ->
+            YouTubePlayerView(context = context).apply {
+                lifecicle.lifecycle.addObserver(this)
+
+                addYouTubePlayerListener(object : AbstractYouTubePlayerListener() {
+                    override fun onReady(youTubePlayer: YouTubePlayer) {
+                        youTubePlayer.loadVideo(destination.overViewVideo, 0f)
+                        youTubePlayer.pause()
+                        var playbackRate = PlayerConstants.PlaybackRate.values()
+//                                youTubePlayer.setPlaybackRate(playbackRate.get(1))
+//                                youTubePlayer.toggleFullscreen()
+
+                    }
+                })
+            }
+        })
         Spacer(modifier = Modifier.height(10.dp))
         Text(text = destination.description,
             style = MaterialTheme.typography.bodyMedium,
@@ -403,27 +424,8 @@ fun Details(destination: Destination){
 }
 
 @Composable
-fun Reviews(destination: Destination){
-    var list by remember { mutableStateOf(destination.comments) }
-    Box(modifier = Modifier
-        .fillMaxWidth()) {
-        if (!list.isNullOrEmpty()){
-            LazyColumn(modifier = Modifier
-                .fillMaxWidth()
-                .height(1000.dp)){
-                items(list!!.size){
-                    ReviewItem(comment = list!![it], (it==list!!.lastIndex))
-                }
-            }
-        }else{
-            Text(text = "No comments yet",
-                fontSize = 18.sp,
-                color = Color.Black,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.align(
-                    Alignment.Center))
-        }
-    }
+fun Reviews(destination: Destination, list: List<Comment>?){
+
 }
 
 @Composable

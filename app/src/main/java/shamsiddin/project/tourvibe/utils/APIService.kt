@@ -54,6 +54,9 @@ interface APIService {
         @Path("country") country: String
     ): Call<User>
 
+    @GET("edit/{id}/{email}/{password}/{name}/{country}")
+    fun edit(@Path("id") id: Int, @Path("email") email: String, @Path("password") password: String, @Path("name") name: String, @Path("country") country: String): Call<User>
+
     @GET("foods/categories/")
     fun getFoodsAllCategory(): Call<List<String>>
 
