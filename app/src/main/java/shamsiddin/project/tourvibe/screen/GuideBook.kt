@@ -67,27 +67,8 @@ import shamsiddin.project.tourvibe.utils.SharedPreferences
 @Composable
 fun GuideBook(navController: NavController) {
     val context = LocalContext.current
-    val user = User(0, "Shamsiddin Tohirov", "takhirovshamsiddin@gmail.com", "+998 99 008 65 08", "Uzbekistan", null, null, null, "12345")
     val shared = SharedPreferences.getInstance(LocalContext.current)
-
-    val commentsList = mutableListOf<Comment>(
-        Comment(0, "", user, "23/02/2024", "Farrukh Buriyev, Ibrohim Mukhtarov, Xoliqov Abdulbosit, Adilov Abdumajid",4.8),
-        Comment(0, "", user, "23/02/2024", "Farrukh Buriyev, Ibrohim Mukhtarov, Xoliqov Abdulbosit, Adilov Abdumajid",4.8)
-    )
-//    val destinationList = mutableListOf<Destination>(
-//        Destination(0, "https://cdn.odysseytraveller.com/app/uploads/2019/07/registan-square-samarkand.jpg", listOf("https://www.whyweseek.com/wp-content/uploads/2019/06/registan-at-night-samarkand.jpg", "https://uzbek-travel.com/images/uz/Landmarks/Samarkand/The_Registan/4241211370_dd3f3136ff_b.jpg", "https://lifejourney4two.com/wp-content/uploads/2020/01/registan-square-samarkand_.jpg"), "The Registan", "Translated from Uzbek, “registan” means a sand place. In the ancient times, this central square was covered by sand. The territory was not initially surrounded by madrassah; those great erections appeared rather later. In that period, authorities of the city were gathering people on the square to announce khan’s orders, held celebrations and public executions, and collected the army leaving to war.\n" +
-//                "\n" +
-//                "In the past, one could see many trade rows around the square, where artisans and farmers were selling their goods. All main roads of Samarkand led to Registan where it was always noisy and lively.\n" +
-//                "\n" +
-//                "Various rulers during their reign would change the main significance of the square, but since those times and up to now, Registan has always been the center of the city social life.\n" +
-//                "\n" +
-//                "There are three madrassahs on the square: Ulugh Beg, Sherdor and Tilla-Kori, that are the main sights of the city. They were erected by two rulers at different times.", 4.8, commentsList, listOf(), "Uzbekistan", "Samarkand", "https://youtu.be/AyF6JsliDIc"),
-//        Destination(1, "https://cdn.elebase.io/173fe953-8a63-4a8a-8ca3-1bacb56d78a5/85de9252-cff1-4907-beea-e984ed9ccf1a-shutterstock_2084584372.jpg?w=1000&h=500&fit=crop&q=75", listOf("", "", ""), "Itchan Kala", "", 4.8, null, listOf(), "", "Khiva", ""),
-//        Destination(2, "https://uzbek-travel.com/images/uz/Landmarks/Tashkent/Amir_Temur_Square/amir_temur_square_4.jpg", listOf("", "", ""), "Amir Temur Square", "", 4.8, null, listOf(), "", "Tashkent", ""),
-//        Destination(3, "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/18/03/00/52/la-moschea-di-kok-gumbaz.jpg?w=500&h=400&s=1", listOf("", "", ""), "Shakhrisabz", "", 4.8, null, listOf(), "", "Bukhara", ""),
-//        Destination(4, "https://api.society.uz/media/news/BOZ_4642.medium.webp", listOf("", "", ""), "Jarkurgan Minaret", "", 4.8, null, listOf(), "", "Fergana", ""),
-//        Destination(5, "https://silkroaddestinations.com/wp-content/uploads/2016/12/sam-observatory-ulugbek-srd-860x424.jpg", listOf("", "", ""), "Ulugbek Observatory", "", 4.8, null, listOf(), "", "Samarkand", "")
-//    )
+    val user = shared.getUser()!!
 
 
     var allDestinations by remember { mutableStateOf(listOf<Destination>()) }
@@ -144,7 +125,7 @@ fun GuideBook(navController: NavController) {
             Spacer(modifier = Modifier.width(5.dp))
             Column {
                 Text(text = "Hi! \uD83D\uDC4B", fontSize = 15.sp)
-                Text(text = "Buriyev Farrukh", fontSize = 15.sp)
+                Text(text = user.name, fontSize = 15.sp)
             }
         }
 //        Spacer(modifier = Modifier.height(10.dp))
