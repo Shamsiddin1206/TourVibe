@@ -7,6 +7,7 @@ import android.annotation.SuppressLint
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -105,7 +106,7 @@ fun Menu(navController: NavController) {
 
                 ) {
                     IconButton(onClick = { /* Handle settings click */ }) {
-                        Icon(
+                        Image(
                             painter = painterResource(id = shamsiddin.project.tourvibe.R.drawable.person_default_ic),
                             modifier = Modifier.size(32.dp),
                             contentDescription = "Person",
@@ -120,8 +121,8 @@ fun Menu(navController: NavController) {
                             )
 
                         Row {
-                            Icon(
-                                painter = painterResource(id = shamsiddin.project.tourvibe.R.drawable.star),
+                            Image(
+                                painter = painterResource(id = shamsiddin.project.tourvibe.R.drawable.location),
                                 modifier = Modifier.size(28.dp),
 
                                 contentDescription = "location",

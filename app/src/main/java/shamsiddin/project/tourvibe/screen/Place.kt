@@ -96,6 +96,7 @@ import kotlinx.coroutines.launch
 import shamsiddin.project.tourvibe.R
 import shamsiddin.project.tourvibe.model.Comment
 import shamsiddin.project.tourvibe.model.Destination
+import shamsiddin.project.tourvibe.model.Food
 import shamsiddin.project.tourvibe.ui.theme.GreenPrimary
 import shamsiddin.project.tourvibe.utils.Manager
 import shamsiddin.project.tourvibe.utils.SharedPreferences
@@ -174,9 +175,10 @@ private fun Body(destination: Destination, scrollState: ScrollState) {
     val placeImages = destination.images.toMutableList()
     placeImages.add(0, destination.mainImage)
     val viewPagerState = rememberPagerState { placeImages.size }
+    var destinationInfo by remember { mutableStateOf(Destination(id = destination.id, mainImage = destination.mainImage, images = destination.images, name = destination.name, description = destination.description, ratings = destination.ratings,comments = destination.comments, locatedCountry = destination.locatedCountry, locatedState = destination.locatedState, history = destination.history, category = destination.category, overViewVideo = destination.overViewVideo)) }
 
 
-    var list by remember { mutableStateOf(destination.comments?.reversed()) }
+    var list by remember { mutableStateOf(destinationInfo.comments?.reversed()) }
 
 
 
@@ -251,12 +253,12 @@ private fun Body(destination: Destination, scrollState: ScrollState) {
                                 2 -> {
                                     Box(modifier = Modifier
                                         .fillMaxWidth()) {
-                                        if (!list.isNullOrEmpty()){
+                                        if (!destinationInfo.comments.isNullOrEmpty()){
                                             LazyColumn(modifier = Modifier
                                                 .fillMaxWidth()
                                                 .height(1000.dp)){
-                                                items(list!!.size){
-                                                    ReviewItem(comment = list!![it], (it== list!!.lastIndex))
+                                                items(destinationInfo.comments!!.size){
+                                                    ReviewItem(comment = destinationInfo.comments!![it], (it== destinationInfo.comments!!.lastIndex))
                                                 }
                                             }
                                         }else{
@@ -346,6 +348,11 @@ private fun Body(destination: Destination, scrollState: ScrollState) {
                                         onClick = {
                                             Manager.giveComment("destination",destination.id,currentUser.name,myRating.toDouble(),commentText){
                                                 Log.d("COMMENT", "Body: ${it}")
+                                                if (it =="Success"){
+                                                    Manager.getDestination(destination.id) {
+                                                        destinationInfo = it
+                                                    }
+                                                }
                                             }
                                             list = destination.comments!!.reversed()
                                             sheetState = false },
