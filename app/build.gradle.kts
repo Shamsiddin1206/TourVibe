@@ -99,4 +99,8 @@ dependencies {
 
     // Optional Accompanist permissions to request permissions in compose
     implementation ("com.google.accompanist:accompanist-permissions:0.31.5-beta")
+
+    //Lottie
+    implementation("com.airbnb.android:lottie-compose:6.0.1")
+
 }
